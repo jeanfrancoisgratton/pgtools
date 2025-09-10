@@ -1,0 +1,7 @@
+#!/usr/bin/env ash
+
+cd /opt/bin
+sudo chgrp -R devops .
+sudo chmod 775 /opt/bin/pgtool
+
+exit 0

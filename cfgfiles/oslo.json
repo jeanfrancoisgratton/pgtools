@@ -1,0 +1,7 @@
+{
+  "host": "oslo",
+  "port": 65432,
+  "user": "jfgratton",
+  "password": "fimOSv7hhyFXGVcGQ75gacEdD3hLAib5",
+  "sslmode": "disable"
+}

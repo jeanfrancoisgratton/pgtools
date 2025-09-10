@@ -1,0 +1,7 @@
+- [ ] Verbose output (with -q flag, too)<br> 
+- [ ] Logging cleanup<br>
+- [ ] Bring logging into its own subpackage<br>
+- [ ] Consistent error codes
+- [ ] Need to add a -f (--force) flag to `DROP {TABLE|DATABASE}`
+- [x] Create an empty log file when launching the tool for the first time in order to avoid a ENOFILE error
+- [x] Markers in log at start and end of execution

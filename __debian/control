@@ -1,0 +1,8 @@
+Package: pgtools
+Version: 1.21.10-0
+Architecture: amd64
+Maintainer: J.F. Gratton<jean-francois@famillegratton.net>
+Description: PGSQL multi-usage tool
+Section: Database tool
+Depends: 
+
