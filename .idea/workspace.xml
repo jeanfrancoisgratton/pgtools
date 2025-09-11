@@ -5,21 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd6765de-7f2b-4527-a288-02a235a18f4f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/cmd/rolesCommands.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/roles/alterRole.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/roles/createRole.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/roles/deleteRole.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/roles/helpers.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/roles/listRoles.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/roles/password.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/options.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/roleTypes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db/list.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/list.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/src/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/src/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/dbTypes.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/dbTypes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/roleTypes.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/roleTypes.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
