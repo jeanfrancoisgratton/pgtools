@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"pgtool/cmd"
+	"pgtools/cmd"
 	"time"
 )
 
@@ -12,18 +12,16 @@ func main() {
 	var err error
 	var CurrentWorkingDir string
 
-	// Create the pgtool logdir
-	base := os.Getenv("XDG_STATE_HOME")
-	if base == "" {
-		base = filepath.Join(os.Getenv("HOME"), ".local", "state")
-	}
-	if err = os.MkdirAll(filepath.Join(base, "pgtool"), 0755); err != nil {
+	// Create the pgtools logdir
+	base := filepath.Join(os.Getenv("HOME"), ".local", "state")
+
+	if err = os.MkdirAll(base, 0755); err != nil {
 		fmt.Println(err)
 		os.Exit(11)
 	}
 
 	// "Touch" the logfile so we avoid an error at the very first use of the tool
-	if f, e := os.OpenFile(filepath.Join(base, "pgtool", "pgtool.log"),
+	if f, e := os.OpenFile(filepath.Join(base, "pgtools.log"),
 		os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644); e != nil {
 		fmt.Println(e)
 		os.Exit(12)
@@ -38,7 +36,7 @@ func main() {
 	}
 
 	// We need to create a configuration directory. This is a per-user config dir
-	if err = os.MkdirAll(filepath.Join(os.Getenv("HOME"), ".config", "JFG", "pgtool"), os.ModePerm); err != nil {
+	if err = os.MkdirAll(filepath.Join(os.Getenv("HOME"), ".config", "JFG", "pgtools"), os.ModePerm); err != nil {
 		fmt.Println(err)
 		os.Exit(11)
 	}
@@ -63,8 +61,8 @@ func main() {
 }
 
 func markLogFile(boundary string) error {
-	base := filepath.Join(os.Getenv("HOME"), ".local", "state", "pgtool")
-	f, err := os.OpenFile(filepath.Join(base, "pgtool.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	base := filepath.Join(os.Getenv("HOME"), ".local", "state")
+	f, err := os.OpenFile(filepath.Join(base, "pgtools.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		return err
 	}

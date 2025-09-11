@@ -16,9 +16,8 @@
 # vendor/
 
 samples/
-.idea/
-test*
 *.sql*
 *.sql.gz
-*.tar
+*.sql.xz
+*.tar*
 .DS*

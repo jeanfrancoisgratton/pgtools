@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/04 16:00
 // Original filename: src/cmd/envCommands.go
@@ -7,10 +7,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
-	"pgtool/environment"
-	"pgtool/types"
+	"pgtools/environment"
+	"pgtools/types"
+	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 var envCmd = &cobra.Command{
@@ -25,7 +27,7 @@ var envCmd = &cobra.Command{
 var envListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
-	Example: "pgtool env list [directory]",
+	Example: "pgtools env list [directory]",
 	Short:   "Lists all env files",
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := environment.ListEnvironments(); err != nil {
@@ -39,11 +41,16 @@ var envListCmd = &cobra.Command{
 var envAddCmd = &cobra.Command{
 	Use:     "add",
 	Aliases: []string{"create"},
-	Example: "pgtool env add -e [FILE[.json]]",
+	Example: "pgtools env add [FILE[.json]]",
 	Short:   "Adds the env FILE",
 	Long: `The extension (.json) is implied and will be added if missing.
 The default defaultEnv.json file will be used if no filename is provided.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			types.EnvConfigFile = "defaultEnv.json"
+		} else {
+			types.EnvConfigFile = strings.TrimSuffix(args[0], ".json") + ".json"
+		}
 		if err := environment.CreateConfig(); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(err.Code)
@@ -55,7 +62,7 @@ The default defaultEnv.json file will be used if no filename is provided.`,
 var envInfoCmd = &cobra.Command{
 	Use:     "info",
 	Aliases: []string{"explain"},
-	Example: "pgtool env info FILE1[.json] FILE2[.json]... FILEn[.json]",
+	Example: "pgtools env info FILE1[.json] FILE2[.json]... FILEn[.json]",
 	Short:   "Prints the env FILE[12n] information",
 	Long:    `You can list as many env files as you wish, here`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -74,14 +81,14 @@ var envInfoCmd = &cobra.Command{
 var envRmCmd = &cobra.Command{
 	Use:     "rm",
 	Aliases: []string{"remove"},
-	Example: "pgtool env remove { FILE[.json] | defaultEnv.json }",
+	Example: "pgtools env remove FILE[.json]",
 	Short:   "Removes the env FILE",
 	Run: func(cmd *cobra.Command, args []string) {
 		fname := ""
 		if len(args) == 0 {
-			fname = types.EnvConfigFile
+			fname = strings.TrimSuffix(".json", types.EnvConfigFile) + ".json"
 		} else {
-			fname = args[0]
+			fname = strings.TrimSuffix(".json", args[0]) + ".json"
 		}
 		if err := environment.RemoveEnvFile(fname); err != nil {
 			fmt.Printf("%s\n", err.Error())
@@ -92,5 +99,4 @@ var envRmCmd = &cobra.Command{
 
 func init() {
 	envCmd.AddCommand(envRmCmd, envInfoCmd, envAddCmd, envListCmd)
-
 }

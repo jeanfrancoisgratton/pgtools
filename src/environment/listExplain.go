@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/05 16:49
 // Original filename: src/environment/listExplain.go
@@ -7,15 +7,16 @@ package environment
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"pgtools/types"
+	"strconv"
+	"strings"
+
 	ce "github.com/jeanfrancoisgratton/customError/v2"
 	hf "github.com/jeanfrancoisgratton/helperFunctions"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
-	"os"
-	"path/filepath"
-	"pgtool/types"
-	"strconv"
-	"strings"
 )
 
 func ListEnvironments() *ce.CustomError {
@@ -23,7 +24,7 @@ func ListEnvironments() *ce.CustomError {
 	var dirFH *os.File
 	var finfo, fileInfos []os.FileInfo
 
-	if dirFH, err = os.Open(filepath.Join(os.Getenv("HOME"), ".config", "JFG", "pgtool")); err != nil {
+	if dirFH, err = os.Open(filepath.Join(os.Getenv("HOME"), ".config", "JFG", "pgtools")); err != nil {
 		return &ce.CustomError{Code: 15, Title: "Unable to read config directory", Message: err.Error()}
 	}
 
@@ -68,7 +69,7 @@ func ExplainEnvFile(envfiles []string) *ce.CustomError {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"Environment file", "DB server host", "DB server port", "DB user", "DB password",
-		"SSL enabled", "SSL cert", "SSL key"})
+		"SSL enabled", "SSL cert", "SSL key", "Description"})
 
 	for _, envfile := range envfiles {
 		if !strings.HasSuffix(envfile, ".json") {
@@ -76,7 +77,9 @@ func ExplainEnvFile(envfiles []string) *ce.CustomError {
 		}
 		types.EnvConfigFile = envfile
 
-		if e, err := LoadConfig(); err != nil {
+		// error code 99 is specifically taylored for this use; it means that defaultEnv does not exist, and that
+		// we can continue. otherwise we abort
+		if e, err := LoadConfig(); err != nil && err.Code != 99 {
 			types.EnvConfigFile = oldEnvFile
 			return err
 		} else {
@@ -90,7 +93,7 @@ func ExplainEnvFile(envfiles []string) *ce.CustomError {
 			}
 			t.AppendRow([]interface{}{hf.Green(envfile), hf.Green(e.Host), hf.Green(strconv.Itoa(e.Port)),
 				hf.Green(e.User), hf.Yellow("*ENCODED*"),
-				hf.Green(e.SSLMode), hf.Green(sslcert), hf.Green(sslkey)})
+				hf.Green(e.SSLMode), hf.Green(sslcert), hf.Green(sslkey), hf.Green(e.Description)})
 		}
 	}
 	t.SortBy([]table.SortBy{

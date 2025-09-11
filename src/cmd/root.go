@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // src/cmd/root.go
 
 package cmd
@@ -6,15 +6,15 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"pgtool/types"
+	"pgtools/types"
 
 	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "pgtool",
-	Short:   "PostgreSQL backup and restore tool",
+	Use:     "pgtools",
+	Short:   "PostgreSQL client utilities",
 	Version: "1.21.10 (2025.09.07)",
 }
 
@@ -39,6 +39,8 @@ func init() {
 	rootCmd.DisableAutoGenTag = true
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	rootCmd.AddCommand(clCmd, envCmd, dbCmd)
+
+	rootCmd.PersistentFlags().StringVarP(&types.LogLevel, "loglevel", "l", "none", "Log level: none|debug|info|error")
 	rootCmd.PersistentFlags().BoolVarP(&types.DebugMode, "debug", "d", false, "Enable debug mode")
 	rootCmd.PersistentFlags().StringVarP(&types.EnvConfigFile, "env", "e", "defaultEnv.json", "Default environment configuration file; this is a per-user setting.")
 }
