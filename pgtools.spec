@@ -61,6 +61,9 @@ install -Dpm 0755 %{_sourcedir}/%{_binaryname} %{buildroot}%{_bindir}/%{_binaryn
 
 
 %changelog
+* Tue Sep 09 2025 Binary package builder <builder@famillegratton.net> 1.21.10-0
+- new package built with tito
+
 * Sun Sep 07 2025 Binary package builder <builder@famillegratton.net> 1.21.10-0
 - Updated to GO 1.25.1 (jean-francois@famillegratton.net)
 
