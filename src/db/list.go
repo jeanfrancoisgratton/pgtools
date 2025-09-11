@@ -1,7 +1,7 @@
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/09 02:55
-// Original filename: src/db/list.go
+// Original filename: src/db/listRoles.go
 
 package db
 

@@ -47,11 +47,11 @@ var backupCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := environment.LoadConfig()
 		if err != nil {
-			fmt.Println(os.Stderr, "Failed to load config:", err)
+			fmt.Println("Failed to load config:", err.Error())
 			os.Exit(err.Code)
 		}
 		if err := db.BackupDatabase(cfg, args); err != nil {
-			fmt.Println(os.Stderr, "Failed to backup database:", err)
+			fmt.Println("Failed to backup database:", err.Error())
 			os.Exit(err.Code)
 		}
 	},
