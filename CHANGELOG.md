@@ -1,5 +1,6 @@
 | Release | Date       | Comments                                                           |
 |---------|------------|--------------------------------------------------------------------|
+| 1.30.00 | 2025.09.11 | Completed the `roles` subcommand                                   |
 | 1.21.10 | 2025.09.07 | Updated to GO 1.25.1                                               |
 | 1.21.00 | 2025.07.24 | Fixed a nil pointer issue in db backup -u                          |
 | 1.20.00 | 2025.07.24 | Error handling is firmed-up, more consistent error codes (Phase 1) |
