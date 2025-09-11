@@ -61,6 +61,14 @@ install -Dpm 0755 %{_sourcedir}/%{_binaryname} %{buildroot}%{_bindir}/%{_binaryn
 
 
 %changelog
+* Thu Sep 11 2025 Binary package builder <builder@famillegratton.net> 1.30.00-0
+- version bump (jean-francois@famillegratton.net)
+- ide config update (jean-francois@famillegratton.net)
+- completed db subcommands (jean-francois@famillegratton.net)
+- module name refactoring (jean-francois@famillegratton.net)
+- types subpackage refactoring (jean-francois@famillegratton.net)
+- Revamped environment handling (jean-francois@famillegratton.net)
+
 * Tue Sep 09 2025 Binary package builder <builder@famillegratton.net> 1.21.10-0
 - new package built with tito
 
