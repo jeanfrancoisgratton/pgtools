@@ -1,7 +1,7 @@
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/09/11 00:36
-// Original filename: src/types/globalFlags.go
+// Original filename: src/types/flagTypes.go
 
 package types
 
