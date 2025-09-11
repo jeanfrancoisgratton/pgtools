@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/09 02:55
 // Original filename: src/db/list.go
@@ -7,14 +7,15 @@ package db
 
 import (
 	"context"
+	"os"
+	"pgtools/logging"
+	"pgtools/types"
+
 	"github.com/jackc/pgx/v5"
 	ce "github.com/jeanfrancoisgratton/customError/v2"
 	hf "github.com/jeanfrancoisgratton/helperFunctions"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
-	"os"
-	"pgtool/logging"
-	"pgtool/types"
 )
 
 // List all databases on the server

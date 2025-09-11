@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 
 package db
@@ -7,11 +7,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"pgtools/logging"
+	"pgtools/types"
+	"strings"
+
 	"github.com/jackc/pgx/v5"
 	ce "github.com/jeanfrancoisgratton/customError/v2"
-	"pgtool/logging"
-	"pgtool/types"
-	"strings"
 )
 
 func buildCreateTableSQL(conn *pgx.Conn, table string) (string, *ce.CustomError) {

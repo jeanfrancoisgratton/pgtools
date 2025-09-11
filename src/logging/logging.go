@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/09 10:58
 // Original filename: src/db/logging.go
@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"pgtool/types"
+	"pgtools/types"
 	"time"
 )
 
@@ -38,11 +38,8 @@ func Debugf(format string, v ...interface{}) {
 
 func init() {
 	// Initialize log file
-	base := os.Getenv("XDG_STATE_HOME")
-	if base == "" {
-		base = filepath.Join(os.Getenv("HOME"), ".local", "state")
-	}
-	f, _ := os.OpenFile(filepath.Join(base, "pgtool", "pgtool.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	base := filepath.Join(os.Getenv("HOME"), ".local", "state")
+	f, _ := os.OpenFile(filepath.Join(base, "pgtools.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 
 	//if err != nil {
 	//	fmt.Fprintf(os.Stderr, "WARNING: failed to open log file: %v\n", err)

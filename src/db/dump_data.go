@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/14 18:00
 // Original filename: src/db/dump_data.go
@@ -8,13 +8,14 @@ package db
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v5"
-	ce "github.com/jeanfrancoisgratton/customError/v2"
 	"io"
-	"pgtool/logging"
-	"pgtool/types"
+	"pgtools/logging"
+	"pgtools/types"
 	"strings"
 	"time"
+
+	"github.com/jackc/pgx/v5"
+	ce "github.com/jeanfrancoisgratton/customError/v2"
 )
 
 func writeDatabaseSQL(cfg *types.DBConfig, dbName string, writer io.Writer) *ce.CustomError {
@@ -22,7 +23,7 @@ func writeDatabaseSQL(cfg *types.DBConfig, dbName string, writer io.Writer) *ce.
 
 	logging.Infof("Processing database: %s", dbName)
 	fmt.Fprintf(writer, "-- Dump of database: %s\n", dbName)
-	fmt.Fprintf(writer, "-- Dump created with pgtool on %s\n\n", time.Now().Format("2006.01.02 15:04:05"))
+	fmt.Fprintf(writer, "-- Dump created with pgtools on %s\n\n", time.Now().Format("2006.01.02 15:04:05"))
 	fmt.Fprintf(writer, "DROP DATABASE IF EXISTS %s;\n", stripChars(dbName, "\""))
 	if dbDef, nerr := GetDatabaseDefinition(cfg, dbName); nerr == nil {
 		fmt.Fprintf(writer, "%s;\n", dbDef)

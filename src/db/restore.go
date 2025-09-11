@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/08 17:09
 // Original filename: src/db/restore.go
@@ -10,11 +10,12 @@ import (
 	"compress/gzip"
 	"context"
 	"fmt"
-	ce "github.com/jeanfrancoisgratton/customError/v2"
 	"io"
 	"os"
-	"pgtool/types"
+	"pgtools/types"
 	"strings"
+
+	ce "github.com/jeanfrancoisgratton/customError/v2"
 )
 
 func RestoreDatabase(cfg *types.DBConfig, inOutArgs []string) *ce.CustomError {

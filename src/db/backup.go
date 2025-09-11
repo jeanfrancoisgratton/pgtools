@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/08 17:05
 // Original filename: src/db/backup.go
@@ -10,11 +10,12 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"pgtool/logging"
 	"strings"
 
 	ce "github.com/jeanfrancoisgratton/customError/v2"
-	"pgtool/types"
+
+	"pgtools/logging"
+	"pgtools/types"
 )
 
 func BackupDatabase(cfg *types.DBConfig, inOutArgs []string) *ce.CustomError {

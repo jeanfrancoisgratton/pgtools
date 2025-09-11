@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/12 15:23
 // Original filename: src/db/dbmetadata.go
@@ -9,9 +9,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	ce "github.com/jeanfrancoisgratton/customError/v2"
-	"pgtool/types"
+	"pgtools/types"
 	"strings"
+
+	ce "github.com/jeanfrancoisgratton/customError/v2"
 )
 
 func GetOwnership(databaseName string, cfg *types.DBConfig) (string, *ce.CustomError) {

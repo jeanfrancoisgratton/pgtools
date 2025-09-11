@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/09 05:21
 // Original filename: src/db/utils.go
@@ -9,12 +9,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/jackc/pgx/v5"
-	ce "github.com/jeanfrancoisgratton/customError/v2"
-	"pgtool/logging"
-	"pgtool/types"
+	"pgtools/logging"
+	"pgtools/types"
 	"strings"
 	"time"
+
+	"github.com/jackc/pgx/v5"
+	ce "github.com/jeanfrancoisgratton/customError/v2"
 )
 
 // this properly closes the connection where the connection might have been closed before conn.Close() was called

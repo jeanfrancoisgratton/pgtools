@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/14 18:18
 // Original filename: src/db/constraints.go
@@ -8,12 +8,14 @@ package db
 import (
 	"context"
 	"fmt"
-	"pgtool/logging"
 	"strings"
 
 	"github.com/jackc/pgx/v5"
+
+	"pgtools/logging"
+	"pgtools/types"
+
 	ce "github.com/jeanfrancoisgratton/customError/v2"
-	"pgtool/types"
 )
 
 // GetAllConstraints fetches all constraints and indexes relevant to DB integrity.

@@ -1,4 +1,4 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/09 18:38
 // Original filename: src/db/user_roles.go
@@ -9,11 +9,12 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"pgtool/logging"
+	"pgtools/logging"
 	"strings"
 
+	"pgtools/types"
+
 	ce "github.com/jeanfrancoisgratton/customError/v2"
-	"pgtool/types"
 )
 
 func DumpGlobalRoles(cfg *types.DBConfig, writer io.Writer) *ce.CustomError {

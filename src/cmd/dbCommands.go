@@ -1,17 +1,18 @@
-// pgtool
+// pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/07/05 18:57
-// Original filename: src/cmd/pgCommands.go
+// Original filename: src/cmd/dbCommands.go
 
 package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
-	"pgtool/db"
-	"pgtool/environment"
-	"pgtool/types"
+	"pgtools/db"
+	"pgtools/environment"
+	"pgtools/types"
+
+	"github.com/spf13/cobra"
 )
 
 var dbCmd = &cobra.Command{
@@ -62,7 +63,7 @@ var restoreCmd = &cobra.Command{
 	Aliases: []string{"load"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
-			fmt.Println("pgtool restore ARCHIVE_NAME")
+			fmt.Println("pgtools restore ARCHIVE_NAME")
 			os.Exit(1)
 		}
 		cfg, err := environment.LoadConfig()
@@ -99,9 +100,7 @@ var dbVerCmd = &cobra.Command{
 
 func init() {
 	dbCmd.AddCommand(listCmd, backupCmd, restoreCmd, dbVerCmd)
-	rootCmd.AddCommand(listCmd, backupCmd, restoreCmd)
 
-	rootCmd.PersistentFlags().StringVarP(&types.LogLevel, "loglevel", "l", "none", "Log level: none|debug|info|error")
 	backupCmd.PersistentFlags().BoolVarP(&types.UserRoles, "users", "u", false, "Backup global users/roles only")
 	backupCmd.PersistentFlags().BoolVarP(&types.AllDBs, "all", "a", false, "Backup all databases")
 	backupCmd.MarkFlagsMutuallyExclusive("all", "users")
@@ -110,5 +109,4 @@ func init() {
 	restoreCmd.PersistentFlags().BoolVarP(&types.UserRoles, "users", "u", false, "Backup global users/roles only")
 
 	listCmd.PersistentFlags().BoolVarP(&types.Quiet, "quiet", "q", false, "Silent output")
-
 }
