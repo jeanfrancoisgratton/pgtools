@@ -20,7 +20,9 @@ You can get help on all commands with the help command: `pgtools command -h`, or
 
 ### The environment file
 Before using the tool, we need to create an _environment file_. What is that file ? It's a way to keep the tool usable across multiple servers/platforms/environments. The file offers a brief description of the environment, along with credentials.
-Typically, it looks like this:
+
+#### Typical environment file
+... would look like this:
 ```json
 {
   "description": "optional comment or description",
@@ -36,8 +38,37 @@ Typically, it looks like this:
 The last two members are omitted if `sslmode` is set to "disable".
 All environment files are located in `$HOME/.config/JFG/pgtools/`; the default file is named `defaultEnv.json`
 
-To create the environment file, you simply run `pgtools env create`.
+To create the environment file, you simply run `pgtools env create`. You will be prompted for the values to put
 
-Again, more information is available with `pgtools env -h` or `pgtools env $SUBCOMMAND -h`. There are other commands to list/delete/describe those environment files.
+#### Other `env` command outputs
+- List environment files
+```bash
+[23:08:41|jfgratton@london:src]: /opt/bin/pgtools env ls
+Number of environment files: 2
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+┃ Environment file ┃ File size ┃ Modification time   ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━┫
+┃ defaultEnv.json  ┃ 184       ┃ 2025/09/10 22:32:52 ┃
+┃ test.json        ┃ 244       ┃ 2025/09/10 21:12:51 ┃
+┗━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━┛
+```
+- Get details on an environment file named `test.json`
+```bash
+[23:08:48|jfgratton@london:src]: /opt/bin/pgtools env info test
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Environment file ┃ DB server host ┃ DB server port ┃ DB user   ┃ DB password ┃ SSL enabled ┃ SSL cert   ┃ SSL key    ┃ Description           ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━━━╋━━━━━━━━━━━━━╋━━━━━━━━━━━━╋━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ test.json        ┃ london         ┃ 5432           ┃ jfgratton ┃ *ENCODED*   ┃ require     ┃ london.crt ┃ london.key ┃ test environment file ┃
+┗━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━┻━━━━━━━━━━━━━┻━━━━━━━━━━━━┻━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━┛
+```
+- Remove the `test.json` environment file:
+```bash
+[23:15:28|jfgratton@london:src]: /opt/bin/pgtools env rm test
+test.json removed succesfully
+```
+Again, more information is available with `pgtools env -h` or `pgtools env $SUBCOMMAND -h`.
 
 ### Backup one or many databases
+
+*TODO*
+complete doc

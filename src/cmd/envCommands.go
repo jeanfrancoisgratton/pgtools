@@ -86,9 +86,9 @@ var envRmCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fname := ""
 		if len(args) == 0 {
-			fname = strings.TrimSuffix(".json", types.EnvConfigFile) + ".json"
+			fname = strings.TrimSuffix(types.EnvConfigFile, ".json") + ".json"
 		} else {
-			fname = strings.TrimSuffix(".json", args[0]) + ".json"
+			fname = strings.TrimSuffix(args[0], ".json") + ".json"
 		}
 		if err := environment.RemoveEnvFile(fname); err != nil {
 			fmt.Printf("%s\n", err.Error())

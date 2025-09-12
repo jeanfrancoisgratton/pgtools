@@ -15,7 +15,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:     "pgtools",
 	Short:   "PostgreSQL client utilities",
-	Version: "1.30.00 (2025.09.11)",
+	Version: "1.40.00 (2025.09.11)",
 }
 
 // Shows changelog
@@ -56,6 +56,7 @@ func changeLog() {
 	fmt.Print(`
 VERSION			DATE			COMMENT
 -------			----			-------
+1.40.00			2025.09.11		Completed the srv subcommand
 1.30.00			2025.09.11		Completed the roles subcommand
 1.21.10			2025.09.07		Updated to GO 1.25.1
 1.21.00			2025.07.24		Fixed a nil-pointer issue with db backup -u
