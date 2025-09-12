@@ -61,6 +61,9 @@ install -Dpm 0755 %{_sourcedir}/%{_binaryname} %{buildroot}%{_bindir}/%{_binaryn
 
 
 %changelog
+* Fri Sep 12 2025 Binary package builder <builder@famillegratton.net> 1.50.00-0
+- Completed the db create/drop subcomments (jean-francois@famillegratton.net)
+
 * Thu Sep 11 2025 Binary package builder <builder@famillegratton.net> 1.40.00-0
 - Fixed flag display in srv -h, doc update (jean-francois@famillegratton.net)
 - version bump and fix in env rm (jean-francois@famillegratton.net)
