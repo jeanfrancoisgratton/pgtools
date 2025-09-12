@@ -69,6 +69,26 @@ test.json removed succesfully
 Again, more information is available with `pgtools env -h` or `pgtools env $SUBCOMMAND -h`.
 
 ### Backup one or many databases
+*TODO : BACKUP*
 
-*TODO*
-complete doc
+### Restore one or many databases
+*TODO : RESTORE*
+
+### Roles management
+*TODO : ROLE MANAGEMENT*
+
+### Server commands
+
+#### Show terse server information
+To show the server's postgresql version and hostname, you issue the following command:
+```bash
+[23:21:15|jfgratton@london:pgtools]: pgtools srv version   
+Server: MY_SERVER:PORT_NUMBER
+Version: 17.6
+```
+#### Server configuration reload
+To reload the server's configuration (no need to stop/start the server), you issue:
+```bash
+[23:37:21|jfgratton@london:src]: pgtools srv reload   
+Configuration reloaded via SQL.
+```

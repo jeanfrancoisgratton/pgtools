@@ -104,4 +104,9 @@ if neither is provided, we'll try to discover the data directory via SQL.`,
 
 func init() {
 	srvCmd.AddCommand(srvVerCmd, srvReloadCmd)
+
+	// Use regular Flags() on the leaf command so they show in help
+	srvReloadCmd.Flags().BoolVar(&types.ReloadLocal, "local", false, "Attempt local SIGHUP fallback if SQL reload fails")
+	srvReloadCmd.Flags().StringVar(&types.ReloadPIDFile, "pidfile", "", "Path to postmaster.pid for local fallback")
+	srvReloadCmd.Flags().StringVar(&types.ReloadDataDir, "datadir", "", "PostgreSQL data directory for local fallback (used to resolve postmaster.pid)")
 }
