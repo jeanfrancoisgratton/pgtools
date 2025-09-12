@@ -27,7 +27,7 @@ var srvCmd = &cobra.Command{
 	Aliases: []string{"server"},
 	Short:   "server sub-command",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Valid subcommands are: { list | backup | restore }")
+		fmt.Println("Valid subcommands are: { show | backup | restore }")
 	},
 }
 

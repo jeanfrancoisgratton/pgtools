@@ -1,36 +1,50 @@
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
-// Original timestamp: 2025/07/08 17:05
+// Rewritten: 2025/09/12
 // Original filename: src/db/backup.go
+//
+// Purpose:
+//   - Remove dependency on pgtools/show to avoid package cycles.
+//   - Keep behavior: determine DB show (respecting -a), create archive (.sql[.gz]),
+//     and dump each database by calling writeDatabaseSQL().
+//
 
 package db
 
 import (
 	"compress/gzip"
-	"fmt"
+	"context"
 	"io"
 	"os"
 	"strings"
 
-	ce "github.com/jeanfrancoisgratton/customError/v2"
-
 	"pgtools/logging"
 	"pgtools/types"
+
+	ce "github.com/jeanfrancoisgratton/customError/v2"
 )
 
+// BackupDatabase dumps one or more databases into a single SQL file.
+// Usage semantics (from cmd layer):
+//
+//	pgtools db backup [-a] db1 [db2 ...] archive_name
+//
+// The last argument is always the target archive filename. If it ends with .gz,
+// output is gzip-compressed. The base SQL always uses a .sql extension.
 func BackupDatabase(cfg *types.DBConfig, inOutArgs []string) *ce.CustomError {
-	logging.Debugf("Entering function: BackupDatabase")
+	logging.Debugf("Entering function: db.BackupDatabase")
 
-	if len(inOutArgs) == 0 {
-		logging.Errorf("Error code 201 -> Missing archive name")
-		os.Exit(201)
+	if len(inOutArgs) < 1 {
+		return &ce.CustomError{Code: 90, Title: "Invalid arguments", Message: "missing archive filename"}
 	}
 
+	// Archive filename is the last argument
 	archive := inOutArgs[len(inOutArgs)-1]
-	// archive filename extension handling
-	// full filename should always be $filename.sql[.gz]
-	var gzExt bool
-	if gzExt = strings.HasSuffix(archive, ".gz"); gzExt {
+
+	// Handle filename extensions: ensure .sql, optional .gz
+	gzExt := false
+	if strings.HasSuffix(archive, ".gz") {
+		gzExt = true
 		archive = strings.TrimSuffix(archive, ".gz")
 	}
 	if strings.HasSuffix(archive, ".sql") {
@@ -41,55 +55,78 @@ func BackupDatabase(cfg *types.DBConfig, inOutArgs []string) *ce.CustomError {
 		archive += ".gz"
 	}
 
-	file, err := os.Create(archive)
-	if err != nil {
-		logging.Errorf("Error code 202 -> Unable to create archive: %v", err)
-		return &ce.CustomError{Code: 202, Title: "Failed to create archive", Message: err.Error()}
-	}
-	defer file.Close()
-
-	var outputWriter io.Writer
-	outputWriter = file
-
-	var gzipWriter *gzip.Writer
-	if strings.HasSuffix(archive, ".gz") {
-		gzipWriter = gzip.NewWriter(file)
-		outputWriter = gzipWriter
-		defer gzipWriter.Close()
-	}
-
-	// Handle -u flag
-	if types.UserRoles {
-		if err := DumpGlobalRoles(cfg, outputWriter); err != nil {
-			logging.Errorf("Error code %d -> %s : %s", err.Code, err.Title, err.Message)
-			return err
-		}
-		return nil
-	}
-
-	// Determine database list
+	// Build database show
 	var dbnames []string
 	if types.AllDBs {
 		var cerr *ce.CustomError
-		if dbnames, cerr = ListDatabases(cfg); cerr != nil {
+		if dbnames, cerr = getDatabaseNames(cfg); cerr != nil {
 			logging.Errorf("Error code %d -> %s : %s", cerr.Code, cerr.Title, cerr.Message)
 			return cerr
 		}
 	} else {
 		if len(inOutArgs) < 2 {
-			logging.Errorf(fmt.Sprintf("Error code 203 -> Missing database name(s)"))
-			os.Exit(203)
+			return &ce.CustomError{Code: 91, Title: "Invalid arguments", Message: "no databases specified"}
 		}
 		dbnames = inOutArgs[:len(inOutArgs)-1]
 	}
 
+	// Open output file
+	file, err := os.Create(archive)
+	if err != nil {
+		return &ce.CustomError{Code: 92, Title: "Cannot create archive", Message: err.Error()}
+	}
+	defer func() { _ = file.Close() }()
+
+	var writer io.Writer = file
+	var gzWriter *gzip.Writer
+	if gzExt {
+		gzWriter = gzip.NewWriter(file)
+		writer = gzWriter
+		defer func() { _ = gzWriter.Close() }()
+	}
+
 	// Dump each database
-	for _, db := range dbnames {
-		if err := writeDatabaseSQL(cfg, db, outputWriter); err != nil {
+	for _, dbname := range dbnames {
+		if err := writeDatabaseSQL(cfg, dbname, writer); err != nil {
 			logging.Errorf("Error code %d -> %s : %s", err.Code, err.Title, err.Message)
 			return err
 		}
 	}
 
 	return nil
+}
+
+// getDatabaseNames returns all non-template database names, ordered by name.
+func getDatabaseNames(cfg *types.DBConfig) ([]string, *ce.CustomError) {
+	logging.Debugf("Entering function: db.getDatabaseNames")
+
+	conn, err := Connect(cfg, "postgres")
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close(context.Background())
+
+	rows, qerr := conn.Query(context.Background(), `
+        SELECT datname
+        FROM pg_database
+        WHERE datistemplate = false
+        ORDER BY datname`)
+	if qerr != nil {
+		return nil, &ce.CustomError{Code: 101, Title: "Unable to show databases", Message: qerr.Error()}
+	}
+	defer rows.Close()
+
+	var names []string
+	for rows.Next() {
+		var n string
+		if err := rows.Scan(&n); err != nil {
+			return nil, &ce.CustomError{Code: 102, Title: "Scan error", Message: err.Error()}
+		}
+		names = append(names, n)
+	}
+	if rows.Err() != nil {
+		return nil, &ce.CustomError{Code: 103, Title: "List iteration failed", Message: rows.Err().Error()}
+	}
+
+	return names, nil
 }

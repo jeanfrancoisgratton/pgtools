@@ -27,7 +27,7 @@ var (
 	NewPassword   string
 	ClearPassword bool
 
-	// list flags
+	// show flags
 	ListMembers bool
 	ListVerbose bool
 )

@@ -20,23 +20,7 @@ var dbCmd = &cobra.Command{
 	Aliases: []string{"database"},
 	Short:   "Database sub-command",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Valid subcommands are: { list | backup | restore }")
-	},
-}
-var listCmd = &cobra.Command{
-	Use:     "list",
-	Aliases: []string{"ls"},
-	Short:   "List all accessible databases",
-	Run: func(cmd *cobra.Command, args []string) {
-		cfg, err := environment.LoadConfig()
-		if err != nil {
-			fmt.Printf("%s\n", err.Error())
-		}
-
-		if _, nerr := db.ListDatabases(cfg); nerr != nil {
-			fmt.Printf("%s\n", nerr.Error())
-			os.Exit(nerr.Code)
-		}
+		fmt.Println("Valid subcommands are: { show | backup | restore }")
 	},
 }
 
@@ -127,7 +111,7 @@ var dbDropCmd = &cobra.Command{
 }
 
 func init() {
-	dbCmd.AddCommand(listCmd, backupCmd, restoreCmd, dbCreateCmd, dbDropCmd)
+	dbCmd.AddCommand(showCmd, backupCmd, restoreCmd, dbCreateCmd, dbDropCmd)
 
 	backupCmd.PersistentFlags().BoolVarP(&types.UserRoles, "users", "u", false, "Backup global users/roles only")
 	backupCmd.PersistentFlags().BoolVarP(&types.AllDBs, "all", "a", false, "Backup all databases")
@@ -135,7 +119,7 @@ func init() {
 
 	restoreCmd.PersistentFlags().StringVarP(&types.LogLevel, "loglevel", "l", "error", "Log level: debug|info|error")
 	restoreCmd.PersistentFlags().BoolVarP(&types.UserRoles, "users", "u", false, "Backup global users/roles only")
-	listCmd.PersistentFlags().BoolVarP(&types.Quiet, "quiet", "q", false, "Silent output")
+	showCmd.PersistentFlags().BoolVarP(&types.Quiet, "quiet", "q", false, "Silent output")
 	dbCreateCmd.Flags().StringVarP(&types.CreateOwner, "owner", "o", "", "Owner role for the new database")
 
 	// drop flags

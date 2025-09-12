@@ -19,15 +19,15 @@ var envCmd = &cobra.Command{
 	Use:   "env",
 	Short: "Environment sub-command",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Valid subcommands are: { list | add | remove | info }")
+		fmt.Println("Valid subcommands are: { show | add | remove | info }")
 	},
 }
 
 // List config file
 var envListCmd = &cobra.Command{
-	Use:     "list",
+	Use:     "show",
 	Aliases: []string{"ls"},
-	Example: "pgtools env list [directory]",
+	Example: "pgtools env show [directory]",
 	Short:   "Lists all env files",
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := environment.ListEnvironments(); err != nil {
@@ -64,7 +64,7 @@ var envInfoCmd = &cobra.Command{
 	Aliases: []string{"explain"},
 	Example: "pgtools env info FILE1[.json] FILE2[.json]... FILEn[.json]",
 	Short:   "Prints the env FILE[12n] information",
-	Long:    `You can list as many env files as you wish, here`,
+	Long:    `You can show as many env files as you wish, here`,
 	Run: func(cmd *cobra.Command, args []string) {
 		envfiles := []string{types.EnvConfigFile}
 		if len(args) != 0 {

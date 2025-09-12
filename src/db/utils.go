@@ -10,6 +10,7 @@ import (
 	"database/sql"
 	"fmt"
 	"pgtools/logging"
+	"pgtools/shared"
 	"pgtools/types"
 	"strings"
 	"time"
@@ -29,17 +30,12 @@ func safeClose(conn *pgx.Conn) {
 	_ = conn.Close(context.Background())
 }
 
-func BuildDSN(cfg *types.DBConfig, dbname string) string {
-	return fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
-		cfg.User, cfg.Password, cfg.Host, cfg.Port, dbname, cfg.SSLMode)
-}
-
 func Connect(cfg *types.DBConfig, database string) (*pgx.Conn, *ce.CustomError) {
 	logging.Debugf("Entering function: Connect")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	dsn := BuildDSN(cfg, database)
+	dsn := shared.BuildDSN(cfg, database)
 
 	conn, err := pgx.Connect(ctx, dsn)
 	if err != nil {
