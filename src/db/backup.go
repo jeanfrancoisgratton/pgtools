@@ -71,7 +71,7 @@ func BackupDatabase(cfg *types.DBConfig, inOutArgs []string) *ce.CustomError {
 	var dbnames []string
 	if types.AllDBs {
 		var cerr *ce.CustomError
-		if dbnames, cerr = ListDatabases(cfg); cerr != nil {
+		if dbnames, cerr = ListDatabases(cfg, types.ListVerbose); cerr != nil {
 			logging.Errorf("Error code %d -> %s : %s", cerr.Code, cerr.Title, cerr.Message)
 			return cerr
 		}
