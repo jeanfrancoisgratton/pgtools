@@ -24,7 +24,7 @@ var rolesCmd = &cobra.Command{
 }
 
 var rolesListCmd = &cobra.Command{
-	Use:   "list",
+	Use:   "show",
 	Short: "List roles",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, _ []string) {
