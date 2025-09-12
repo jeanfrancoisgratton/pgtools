@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd6765de-7f2b-4527-a288-02a235a18f4f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/cmd/root.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/cmd/root.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/globalFlags.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/flagTypes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/options.go" beforeDir="false" />
-    </list>
+    <list default="true" id="fd6765de-7f2b-4527-a288-02a235a18f4f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,11 +44,11 @@
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "SHELLCHECK.PATH": "I do mind",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "main",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/jfgratton",
+    "last_opened_file_path": "/localrepos/devops/vaultreader",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",

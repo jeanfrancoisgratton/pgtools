@@ -17,9 +17,10 @@ import (
 )
 
 var rolesCmd = &cobra.Command{
-	Use:   "roles",
-	Short: "Manage PostgreSQL roles (users are roles with LOGIN)",
-	Long:  "Add, delete, edit PostgreSQL roles. A 'user' is just a role with the LOGIN attribute.",
+	Use:     "roles",
+	Aliases: []string{"users"},
+	Short:   "Manage PostgreSQL roles (users are roles with LOGIN)",
+	Long:    "Add, delete, edit PostgreSQL roles. A 'user' is just a role with the LOGIN attribute.",
 }
 
 var rolesListCmd = &cobra.Command{
@@ -155,7 +156,6 @@ var rolePassCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(rolesCmd)
 	rolesCmd.AddCommand(rolesListCmd, roleAddCmd, roleDelCmd, roleEditCmd, rolePassCmd)
 
 	// Common attribute flags for add/edit

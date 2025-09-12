@@ -21,3 +21,4 @@ samples/
 *.sql.xz
 *.tar*
 .DS*
+.idea/

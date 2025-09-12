@@ -16,8 +16,9 @@ import (
 )
 
 var dbCmd = &cobra.Command{
-	Use:   "db",
-	Short: "Environment sub-command",
+	Use:     "db",
+	Aliases: []string{"database"},
+	Short:   "Database sub-command",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Valid subcommands are: { list | backup | restore }")
 	},
@@ -79,27 +80,8 @@ var restoreCmd = &cobra.Command{
 	},
 }
 
-var dbVerCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Shows the database server version",
-	Run: func(cmd *cobra.Command, args []string) {
-		cfg, err := environment.LoadConfig()
-		if err != nil {
-			fmt.Printf("%s\n", err.Error())
-			os.Exit(err.Code)
-		}
-
-		if ver, err := db.ShowDBServerVersion(cfg); err != nil {
-			fmt.Printf("%s\n", err.Error())
-			os.Exit(err.Code)
-		} else {
-			fmt.Printf("Server version: %s\n", ver)
-		}
-	},
-}
-
 func init() {
-	dbCmd.AddCommand(listCmd, backupCmd, restoreCmd, dbVerCmd)
+	dbCmd.AddCommand(listCmd, backupCmd, restoreCmd)
 
 	backupCmd.PersistentFlags().BoolVarP(&types.UserRoles, "users", "u", false, "Backup global users/roles only")
 	backupCmd.PersistentFlags().BoolVarP(&types.AllDBs, "all", "a", false, "Backup all databases")
