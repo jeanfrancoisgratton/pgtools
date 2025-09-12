@@ -61,6 +61,13 @@ install -Dpm 0755 %{_sourcedir}/%{_binaryname} %{buildroot}%{_bindir}/%{_binaryn
 
 
 %changelog
+* Thu Sep 11 2025 Binary package builder <builder@famillegratton.net> 1.40.00-0
+- Fixed flag display in srv -h, doc update (jean-francois@famillegratton.net)
+- version bump and fix in env rm (jean-francois@famillegratton.net)
+- Enhanced server version (jean-francois@famillegratton.net)
+- completed srv reload and srv version (jean-francois@famillegratton.net)
+- minor types refactoring (jean-francois@famillegratton.net)
+
 * Thu Sep 11 2025 Binary package builder <builder@famillegratton.net> 1.30.00-0
 - version bump (jean-francois@famillegratton.net)
 - ide config update (jean-francois@famillegratton.net)
