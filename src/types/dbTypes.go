@@ -5,6 +5,10 @@
 
 package types
 
+var CreateOwner string
+var DropForce bool
+var ListSortBySize bool
+
 type DBConfig struct {
 	Host        string `json:"host"`
 	Port        int    `json:"port"`
@@ -15,6 +19,7 @@ type DBConfig struct {
 	SSLKey      string `json:"sslkey,omitempty"`
 	Description string `json:"comment,omitempty"`
 }
-
-var CreateOwner string
-var DropForce bool
+type DBSize struct {
+	Name      string
+	SizeBytes int64
+}

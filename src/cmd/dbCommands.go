@@ -32,8 +32,7 @@ var listCmd = &cobra.Command{
 		if err != nil {
 			fmt.Printf("%s\n", err.Error())
 		}
-
-		if _, nerr := db.ListDatabases(cfg); nerr != nil {
+		if _, nerr := db.ListDatabases(cfg, types.ListSortBySize); nerr != nil {
 			fmt.Printf("%s\n", nerr.Error())
 			os.Exit(nerr.Code)
 		}
@@ -136,6 +135,7 @@ func init() {
 	restoreCmd.PersistentFlags().StringVarP(&types.LogLevel, "loglevel", "l", "error", "Log level: debug|info|error")
 	restoreCmd.PersistentFlags().BoolVarP(&types.UserRoles, "users", "u", false, "Backup global users/roles only")
 	listCmd.PersistentFlags().BoolVarP(&types.Quiet, "quiet", "q", false, "Silent output")
+	listCmd.Flags().BoolVarP(&types.ListSortBySize, "sort-size", "s", false, "Sort by size instead of name")
 	dbCreateCmd.Flags().StringVarP(&types.CreateOwner, "owner", "o", "", "Owner role for the new database")
 
 	// drop flags
