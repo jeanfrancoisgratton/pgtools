@@ -80,8 +80,54 @@ var restoreCmd = &cobra.Command{
 	},
 }
 
+var dbCreateCmd = &cobra.Command{
+	Use:   "create <dbname>",
+	Short: "Create an empty database",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		cfg, err := environment.LoadConfig()
+		if err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(err.Code)
+		}
+		name := args[0]
+		if nerr := db.CreateDatabase(cfg, name, types.CreateOwner); nerr != nil {
+			fmt.Printf("%s\n", nerr.Error())
+			os.Exit(nerr.Code)
+		}
+		if types.CreateOwner != "" {
+			fmt.Printf("Database %q created with owner %q.\n", name, types.CreateOwner)
+		} else {
+			fmt.Printf("Database %q created.\n", name)
+		}
+	},
+}
+
+var dbDropCmd = &cobra.Command{
+	Use:   "drop <dbname>",
+	Short: "Drop a database",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		cfg, err := environment.LoadConfig()
+		if err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(err.Code)
+		}
+		name := args[0]
+		if nerr := db.DropDatabase(cfg, name, types.DropForce); nerr != nil {
+			fmt.Printf("%s\n", nerr.Error())
+			os.Exit(nerr.Code)
+		}
+		if types.DropForce {
+			fmt.Printf("Database %q dropped (forced).\n", name)
+		} else {
+			fmt.Printf("Database %q dropped.\n", name)
+		}
+	},
+}
+
 func init() {
-	dbCmd.AddCommand(listCmd, backupCmd, restoreCmd)
+	dbCmd.AddCommand(listCmd, backupCmd, restoreCmd, dbCreateCmd, dbDropCmd)
 
 	backupCmd.PersistentFlags().BoolVarP(&types.UserRoles, "users", "u", false, "Backup global users/roles only")
 	backupCmd.PersistentFlags().BoolVarP(&types.AllDBs, "all", "a", false, "Backup all databases")
@@ -89,6 +135,9 @@ func init() {
 
 	restoreCmd.PersistentFlags().StringVarP(&types.LogLevel, "loglevel", "l", "error", "Log level: debug|info|error")
 	restoreCmd.PersistentFlags().BoolVarP(&types.UserRoles, "users", "u", false, "Backup global users/roles only")
-
 	listCmd.PersistentFlags().BoolVarP(&types.Quiet, "quiet", "q", false, "Silent output")
+	dbCreateCmd.Flags().StringVarP(&types.CreateOwner, "owner", "o", "", "Owner role for the new database")
+
+	// drop flags
+	dbDropCmd.Flags().BoolVarP(&types.DropForce, "force", "f", false, "Force drop by disconnecting sessions")
 }
