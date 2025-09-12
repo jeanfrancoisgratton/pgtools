@@ -27,5 +27,5 @@ func ShowDBServerVersion(cfg *types.DBConfig) (*types.ServerInfoStruct, *ce.Cust
 		return nil, &ce.CustomError{Code: 204, Title: "Failed to query server_version", Message: nerr.Error()}
 	}
 
-	return &types.ServerInfoStruct{ServerName: cfg.Host, Version: version}, nil
+	return &types.ServerInfoStruct{ServerName: cfg.Host, ServerPort: cfg.Port, Version: version}, nil
 }

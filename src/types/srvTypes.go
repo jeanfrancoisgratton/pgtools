@@ -19,5 +19,6 @@ type LocalControl struct {
 
 type ServerInfoStruct struct {
 	ServerName string
+	ServerPort int
 	Version    string
 }

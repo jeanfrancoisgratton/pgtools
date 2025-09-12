@@ -45,8 +45,10 @@ var srvVerCmd = &cobra.Command{
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(err.Code)
 		} else {
-			fmt.Printf("Server: %s\nVersion: %s\n",
-				hf.Green(srvinfo.ServerName), hf.Green(srvinfo.Version))
+			fmt.Printf("Server: %s:%s\nVersion: %s\n",
+				hf.Green(srvinfo.ServerName),
+				hf.Green(fmt.Sprintf("%v", srvinfo.ServerPort)),
+				hf.Green(srvinfo.Version))
 		}
 	},
 }
