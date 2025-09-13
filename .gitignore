@@ -15,10 +15,8 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-*/.idea/*
+.idea/*
 samples/
 *.sql*
-*.sql.gz
-*.sql.xz
 *.tar*
 .DS*
