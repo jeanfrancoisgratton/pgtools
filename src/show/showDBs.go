@@ -2,10 +2,6 @@
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Rewritten: 2025/09/12
-// Purpose:
-//   - Break package cycle by removing dependency on pgtools/db.
-//   - Connect directly with pgx using shared.BuildDSN.
-//   - Provide ShowDatabases(...) and ListTables(...).
 
 package show
 
@@ -24,11 +20,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-// dbRow holds one database entry (name + size in bytes).
-type dbRow struct {
-	Name      string
-	SizeBytes int64
-}
+// DbRow holds one database entry (name + size in bytes).
 
 // ShowDatabases connects to the server, retrieves non-template databases with
 // their sizes, optionally sorts by size (largest first) when sortBySize is true,
@@ -54,9 +46,9 @@ func ShowDatabases(cfg *types.DBConfig, sortBySize bool) ([]string, *ce.CustomEr
 	}
 	defer rows.Close()
 
-	var data []dbRow
+	var data []types.DbRow
 	for rows.Next() {
-		var r dbRow
+		var r types.DbRow
 		if err := rows.Scan(&r.Name, &r.SizeBytes); err != nil {
 			return nil, &ce.CustomError{Title: "Scan failed", Message: err.Error(), Code: 202}
 		}
