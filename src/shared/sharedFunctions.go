@@ -42,9 +42,9 @@ func HumanizeBytes(b int64) string {
 		exp++
 	}
 	// Units: KiB, MiB, GiB, TiB, PiB
-	pre := []string{"KiB", "MiB", "GiB", "TiB", "PiB"}[exp]
+	pre := []string{"KB", "MB", "GB", "TB", "PB"}[exp]
 	value := float64(b) / float64(div)
-	return fmt.Sprintf("%.3f%s", value, pre)
+	return fmt.Sprintf("%.3f %s", value, pre)
 }
 
 // HumanizeBytesMBGB formats a byte count into MB or GB with 1 decimal place.

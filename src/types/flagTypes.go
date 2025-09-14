@@ -11,4 +11,3 @@ var Quiet = false
 var AllDBs = false
 var UserRoles = false
 var LogLevel = "none"
-var SortBySize bool
