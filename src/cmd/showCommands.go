@@ -50,12 +50,15 @@ var showSchemasCmd = &cobra.Command{
 
 		pool, err := shared.GetPool(ctx)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(err.Error())
 			os.Exit(1)
 		}
 		defer pool.Close()
 
-		return show.ShowSchemas(ctx, pool)
+		if sserr := show.ShowSchemas(ctx, pool); sserr != nil {
+			fmt.Println(sserr.Error())
+			os.Exit(1)
+		}
 	},
 }
 
@@ -89,13 +92,13 @@ var showSessionsCmd = &cobra.Command{
 
 		pool, err := shared.GetPool(ctx)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(err.Error())
 			os.Exit(1)
 		}
 		defer pool.Close()
 
-		if err := show.ShowSessions(ctx, pool); err != nil {
-			fmt.Println(err)
+		if sserr := show.ShowSessions(ctx, pool); sserr != nil {
+			fmt.Println(sserr.Error())
 			os.Exit(1)
 		}
 	},

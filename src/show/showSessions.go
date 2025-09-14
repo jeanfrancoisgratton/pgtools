@@ -66,8 +66,8 @@ ORDER BY backend_start;
 			waitEvent    *string
 			querySnippet string
 		)
-		if err := rows.Scan(&pid, &user, &db, &app, &clientAddr, &clientPort, &backendStart, &state, &waitType, &waitEvent, &querySnippet); err != nil {
-			return &ce.CustomError{Code: 802, Title: "Error scanning sessions", Message: err.Error()}
+		if scanerr := rows.Scan(&pid, &user, &db, &app, &clientAddr, &clientPort, &backendStart, &state, &waitType, &waitEvent, &querySnippet); scanerr != nil {
+			return &ce.CustomError{Code: 802, Title: "Error scanning sessions", Message: scanerr.Error()}
 		}
 
 		addr := ""
