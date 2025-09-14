@@ -29,7 +29,7 @@ func CancellableContext() (context.Context, context.CancelFunc) {
 	return ctx, cancel
 }
 
-// GetPool uses your existing BuildDSN() mechanism to create a pgx pool.
+// GetPool uses the existing BuildDSN() mechanism to create a pgx pool.
 // - Replace cfg.BuildDSN() import/path above to match your codebase.
 // - If BuildDSN requires context or args, adjust the call accordingly.
 func GetPool(ctx context.Context) (*pgxpool.Pool, *ce.CustomError) {
@@ -37,11 +37,29 @@ func GetPool(ctx context.Context) (*pgxpool.Pool, *ce.CustomError) {
 	if err != nil {
 		return nil, err
 	}
+
 	dsn := BuildDSN(cfg, "postgres")
 
 	pc, perr := pgxpool.ParseConfig(dsn)
 	if perr != nil {
 		return nil, &ce.CustomError{Code: 803, Title: "Error parsing DSN", Message: perr.Error()}
+	}
+
+	// Ensure RuntimeParams exists
+	if pc.ConnConfig.RuntimeParams == nil {
+		pc.ConnConfig.RuntimeParams = map[string]string{}
+	}
+
+	// application_name precedence:
+	// 1) If DSN already provided it, keep it.
+	// 2) Else, use PGAPPNAME if set.
+	// 3) Else, default to "pgtools".
+	if _, exists := pc.ConnConfig.RuntimeParams["application_name"]; !exists {
+		appName := os.Getenv("PGAPPNAME")
+		if appName == "" {
+			appName = "pgtools"
+		}
+		pc.ConnConfig.RuntimeParams["application_name"] = appName
 	}
 
 	pool, perr := pgxpool.NewWithConfig(ctx, pc)

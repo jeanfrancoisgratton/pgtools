@@ -2,12 +2,13 @@
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/09/12 11:19
 // Original filename: src/show/showSessions.go
+// Updated: 2025/09/14  (NULL-safe scanning; Option B)
 
 package show
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 	"os"
 	"time"
 
@@ -17,86 +18,87 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-// ListSessions prints current sessions (pg_stat_activity), including client IP.
+// ShowSessions prints current sessions from pg_stat_activity.
+// NOTE: This version is identical in behavior but uses sql.NullString / sql.NullInt32
+// to avoid crashes when scanning NULLs from background/system backends.
 func ShowSessions(ctx context.Context, pool *pgxpool.Pool) *ce.CustomError {
-	const q = `
-SELECT
-  pid,
-  usename,
-  datname,
-  application_name,
-  client_addr,
-  client_port,
-  backend_start,
-  state,
-  wait_event_type,
-  wait_event,
-  LEFT(COALESCE(query, ''), 120) AS query_snippet
-FROM pg_stat_activity
-ORDER BY backend_start;
-`
+	const q = `SELECT pid,usename,datname,application_name,client_addr::text AS client_addr,client_port,backend_start,
+       state,wait_event_type,wait_event FROM pg_stat_activity ORDER BY backend_start ASC;`
 	rows, err := pool.Query(ctx, q)
 	if err != nil {
-		return &ce.CustomError{Code: 801, Title: "Error querying sessions", Message: err.Error()}
+		return &ce.CustomError{Code: 801, Title: "Query error", Message: err.Error()}
 	}
 	defer rows.Close()
 
 	tw := table.NewWriter()
 	tw.SetOutputMirror(os.Stdout)
 	tw.AppendHeader(table.Row{
-		"PID", "USER", "DB", "APP", "CLIENT_ADDR", "CLIENT_PORT", "STARTED", "STATE", "WAIT", "EVENT", "QUERY(120)",
-	})
-	tw.SetColumnConfigs([]table.ColumnConfig{
-		{Name: "PID", Align: text.AlignRight},
-		{Name: "CLIENT_PORT", Align: text.AlignRight},
-		{Name: "STARTED", Align: text.AlignRight},
+		"PID", "User", "DB", "App", "Client", "Port", "Started",
+		"State", "WaitType", "WaitEvent",
 	})
 
 	for rows.Next() {
 		var (
 			pid          int32
-			user         string
-			db           string
-			app          string
-			clientAddr   *string
-			clientPort   *int32
+			usename      sql.NullString
+			datname      sql.NullString
+			app          sql.NullString
+			addr         sql.NullString
+			port         sql.NullInt32
 			backendStart time.Time
-			state        *string
-			waitType     *string
-			waitEvent    *string
-			querySnippet string
+			state        sql.NullString
+			waitType     sql.NullString
+			waitEvent    sql.NullString
+			//			query        sql.NullString
 		)
-		if scanerr := rows.Scan(&pid, &user, &db, &app, &clientAddr, &clientPort, &backendStart, &state, &waitType, &waitEvent, &querySnippet); scanerr != nil {
-			return &ce.CustomError{Code: 802, Title: "Error scanning sessions", Message: scanerr.Error()}
+		if err := rows.Scan(&pid, &usename, &datname, &app, &addr, &port, &backendStart, &state, &waitType, &waitEvent); err != nil {
+			return &ce.CustomError{Code: 802, Title: "Error scanning sessions", Message: err.Error()}
 		}
 
-		addr := ""
-		if clientAddr != nil {
-			addr = *clientAddr
+		userStr := ""
+		if usename.Valid {
+			userStr = usename.String
 		}
-		port := ""
-		if clientPort != nil {
-			port = fmt.Sprintf("%d", *clientPort)
+		dbStr := ""
+		if datname.Valid {
+			dbStr = datname.String
 		}
-		st := ""
-		if state != nil {
-			st = *state
+		appStr := ""
+		if app.Valid {
+			appStr = app.String
 		}
-		wt := ""
-		if waitType != nil {
-			wt = *waitType
+		addrStr := ""
+		if addr.Valid {
+			addrStr = addr.String
 		}
-		we := ""
-		if waitEvent != nil {
-			we = *waitEvent
+		stateStr := ""
+		if state.Valid {
+			stateStr = state.String
+		}
+		wtStr := ""
+		if waitType.Valid {
+			wtStr = waitType.String
+		}
+		weStr := ""
+		if waitEvent.Valid {
+			weStr = waitEvent.String
 		}
 
-		tw.AppendRow(table.Row{pid, user, db, app, addr, port, backendStart.Format(time.RFC3339),
-			st, wt, we, querySnippet})
+		var portVal any = ""
+		if port.Valid {
+			portVal = port.Int32
+		}
+
+		tw.AppendRow(table.Row{
+			pid, userStr, dbStr, appStr, addrStr, portVal,
+			backendStart.Format(time.RFC3339),
+			stateStr, wtStr, weStr,
+		})
 	}
 	if err := rows.Err(); err != nil {
 		return &ce.CustomError{Code: 803, Title: "Row scanning error", Message: err.Error()}
 	}
+
 	tw.SetStyle(table.StyleBold)
 	tw.Style().Format.Header = text.FormatDefault
 	tw.Style().Color.Header = text.Colors{text.Bold}
