@@ -44,13 +44,14 @@ var showDBsCmd = &cobra.Command{
 var showSchemasCmd = &cobra.Command{
 	Use:   "schemas",
 	Short: "List all schemas",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		ctx, cancel := shared.CancellableContext()
 		defer cancel()
 
 		pool, err := shared.GetPool(ctx)
 		if err != nil {
-			return err
+			fmt.Println(err)
+			os.Exit(1)
 		}
 		defer pool.Close()
 
@@ -61,34 +62,42 @@ var showSchemasCmd = &cobra.Command{
 var showTablesCmd = &cobra.Command{
 	Use:   "tables",
 	Short: "List all tables with sizes and row estimates",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		ctx, cancel := shared.CancellableContext()
 		defer cancel()
 
 		pool, err := shared.GetPool(ctx)
 		if err != nil {
-			return err
+			fmt.Println(err)
+			os.Exit(1)
 		}
 		defer pool.Close()
 
-		return show.ShowTables(ctx, pool)
+		if err := show.ShowTables(ctx, pool); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	},
 }
 
 var showSessionsCmd = &cobra.Command{
 	Use:   "sessions",
 	Short: "List active sessions (pg_stat_activity)",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		ctx, cancel := shared.CancellableContext()
 		defer cancel()
 
 		pool, err := shared.GetPool(ctx)
 		if err != nil {
-			return err
+			fmt.Println(err)
+			os.Exit(1)
 		}
 		defer pool.Close()
 
-		return show.ShowSessions(ctx, pool)
+		if err := show.ShowSessions(ctx, pool); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	},
 }
 

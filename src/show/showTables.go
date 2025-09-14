@@ -7,16 +7,16 @@ package show
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	ce "github.com/jeanfrancoisgratton/customError/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
 // ListTables prints tables with schema, owner, est rows, sizes, and PK presence.
-func ShowTables(ctx context.Context, pool *pgxpool.Pool) error {
+func ShowTables(ctx context.Context, pool *pgxpool.Pool) *ce.CustomError {
 	const q = `
 WITH user_tables AS (
   SELECT
@@ -71,7 +71,7 @@ ORDER BY t.schema, t.table;
 `
 	rows, err := pool.Query(ctx, q)
 	if err != nil {
-		return fmt.Errorf("query tables: %w", err)
+		return &ce.CustomError{Code: 801, Title: "Error querying tables", Message: err.Error()}
 	}
 	defer rows.Close()
 
@@ -97,14 +97,14 @@ ORDER BY t.schema, t.table;
 			hasPK                              bool
 		)
 		if err := rows.Scan(&schema, &tbl, &owner, &rowsEst, &totalSz, &tableSz, &indexSz, &toastSz, &hasPK); err != nil {
-			return fmt.Errorf("scan table: %w", err)
+			return &ce.CustomError{Code: 802, Title: "Error scanning tables", Message: err.Error()}
 		}
 		tw.AppendRow(table.Row{
 			schema, tbl, owner, rowsEst, totalSz, tableSz, indexSz, toastSz, hasPK,
 		})
 	}
 	if err := rows.Err(); err != nil {
-		return fmt.Errorf("rows (tables): %w", err)
+		return &ce.CustomError{Code: 803, Title: "Error scanning rows", Message: err.Error()}
 	}
 
 	tw.Render()

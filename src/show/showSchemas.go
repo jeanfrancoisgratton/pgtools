@@ -7,16 +7,16 @@ package show
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	ce "github.com/jeanfrancoisgratton/customError/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
 // ListSchemas prints all schemas with owner, #tables, #views, and total size.
-func ShowSchemas(ctx context.Context, pool *pgxpool.Pool) error {
+func ShowSchemas(ctx context.Context, pool *pgxpool.Pool) *ce.CustomError {
 	const q = `
 WITH rels AS (
   SELECT n.oid AS nspoid,
@@ -48,7 +48,7 @@ ORDER BY r.nspname;
 `
 	rows, err := pool.Query(ctx, q)
 	if err != nil {
-		return fmt.Errorf("query schemas: %w", err)
+		return &ce.CustomError{Code: 801, Title: "Error querying schemas", Message: err.Error()}
 	}
 	defer rows.Close()
 
@@ -64,12 +64,12 @@ ORDER BY r.nspname;
 		var schema, owner, totalSize string
 		var tablesCnt, viewsCnt int64
 		if err := rows.Scan(&schema, &owner, &tablesCnt, &viewsCnt, &totalSize); err != nil {
-			return fmt.Errorf("scan schema: %w", err)
+			return &ce.CustomError{Code: 802, Title: "Error scanning schemas", Message: err.Error()}
 		}
 		tw.AppendRow(table.Row{schema, owner, tablesCnt, viewsCnt, totalSize})
 	}
 	if err := rows.Err(); err != nil {
-		return fmt.Errorf("rows (schemas): %w", err)
+		return &ce.CustomError{Code: 803, Title: "Error scanning rows", Message: err.Error()}
 	}
 
 	tw.Render()

@@ -12,12 +12,13 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	ce "github.com/jeanfrancoisgratton/customError/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
 // ListSessions prints current sessions (pg_stat_activity), including client IP.
-func ShowSessions(ctx context.Context, pool *pgxpool.Pool) error {
+func ShowSessions(ctx context.Context, pool *pgxpool.Pool) *ce.CustomError {
 	const q = `
 SELECT
   pid,
@@ -36,7 +37,7 @@ ORDER BY backend_start;
 `
 	rows, err := pool.Query(ctx, q)
 	if err != nil {
-		return fmt.Errorf("query sessions: %w", err)
+		return &ce.CustomError{Code: 801, Title: "Error querying sessions", Message: err.Error()}
 	}
 	defer rows.Close()
 
@@ -66,7 +67,7 @@ ORDER BY backend_start;
 			querySnippet string
 		)
 		if err := rows.Scan(&pid, &user, &db, &app, &clientAddr, &clientPort, &backendStart, &state, &waitType, &waitEvent, &querySnippet); err != nil {
-			return fmt.Errorf("scan session: %w", err)
+			return &ce.CustomError{Code: 802, Title: "Error scanning sessions", Message: err.Error()}
 		}
 
 		addr := ""
@@ -90,24 +91,15 @@ ORDER BY backend_start;
 			we = *waitEvent
 		}
 
-		tw.AppendRow(table.Row{
-			pid,
-			user,
-			db,
-			app,
-			addr,
-			port,
-			backendStart.Format(time.RFC3339),
-			st,
-			wt,
-			we,
-			querySnippet,
-		})
+		tw.AppendRow(table.Row{pid, user, db, app, addr, port, backendStart.Format(time.RFC3339),
+			st, wt, we, querySnippet})
 	}
 	if err := rows.Err(); err != nil {
-		return fmt.Errorf("rows (sessions): %w", err)
+		return &ce.CustomError{Code: 803, Title: "Row scanning error", Message: err.Error()}
 	}
-
+	tw.SetStyle(table.StyleBold)
+	tw.Style().Format.Header = text.FormatDefault
+	tw.Style().Color.Header = text.Colors{text.Bold}
 	tw.Render()
 	return nil
 }
