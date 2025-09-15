@@ -8,7 +8,6 @@ package show
 import (
 	"context"
 	"os"
-	"pgtools/types"
 	"sort"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -20,7 +19,7 @@ import (
 // SchemaRow is a single display row for the aggregated schemas table.
 
 // CollectSchemas queries one database connection (pool) and returns rows tagged with dbName.
-func CollectSchemas(ctx context.Context, pool *pgxpool.Pool, dbName string) ([]types.SchemaRow, *ce.CustomError) {
+func CollectSchemas(ctx context.Context, pool *pgxpool.Pool, dbName string) ([]SchemaRow, *ce.CustomError) {
 	const q = `
 WITH dbinfo AS (
   SELECT d.datdba::regrole::text AS db_owner
@@ -69,9 +68,9 @@ ORDER BY n.nspname;
 	}
 	defer rows.Close()
 
-	out := make([]types.SchemaRow, 0, 32)
+	out := make([]SchemaRow, 0, 32)
 	for rows.Next() {
-		var r types.SchemaRow
+		var r SchemaRow
 		r.DB = dbName
 		if err := rows.Scan(&r.Schema, &r.Owner, &r.Tables, &r.Views, &r.TotalSize); err != nil {
 			return nil, &ce.CustomError{Code: 802, Title: "Error scanning schemas", Message: err.Error()}
@@ -86,7 +85,7 @@ ORDER BY n.nspname;
 }
 
 // RenderSchemas prints one aggregated table for all DBs.
-func RenderSchemas(rows []types.SchemaRow) {
+func RenderSchemas(rows []SchemaRow) {
 	tw := table.NewWriter()
 	tw.SetOutputMirror(os.Stdout)
 	tw.SetStyle(table.StyleRounded)

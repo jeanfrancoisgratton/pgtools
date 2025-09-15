@@ -26,7 +26,7 @@ import (
 // ShowTables connects to each DB in `dbs` using env-based DSNs and prints a single
 // pretty table. Rows are always sorted by Schema, DB, Table (case-insensitive).
 func ShowTables(ctx context.Context, cfg *types.DBConfig, dbs []string) *ce.CustomError {
-	var rowsAll []types.TableRow
+	var rowsAll []TableRow
 
 	for _, dbname := range dbs {
 		// Build a DSN for this DB and open a short-lived pool
@@ -68,7 +68,7 @@ func ShowTables(ctx context.Context, cfg *types.DBConfig, dbs []string) *ce.Cust
 	tw.Style().Options.DrawBorder = true
 	tw.Style().Format.Header = text.FormatDefault
 
-	if types.PageOutput {
+	if PagedOutput {
 		_, terminalHeight := hf.GetTerminalSize()
 		if terminalHeight == 0 {
 			return &ce.CustomError{Title: "Unable to render table", Message: "Unable to get terminal size", Code: 811}
@@ -106,7 +106,7 @@ func boolToYesNo(b bool) string {
 }
 
 // fetchTables returns all user tables with size metrics for the *current* database.
-func fetchTables(ctx context.Context, pool *pgxpool.Pool) ([]types.TableRow, *ce.CustomError) {
+func fetchTables(ctx context.Context, pool *pgxpool.Pool) ([]TableRow, *ce.CustomError) {
 	const q = `
 WITH rel AS (
   SELECT
@@ -137,9 +137,9 @@ ORDER BY schema, tbl;
 	}
 	defer rows.Close()
 
-	var items []types.TableRow
+	var items []TableRow
 	for rows.Next() {
-		var r types.TableRow
+		var r TableRow
 		if err := rows.Scan(&r.Schema, &r.Table, &r.Owner, &r.RowsEst, &r.TotalB, &r.TableB, &r.IndexB, &r.ToastB, &r.HasPK); err != nil {
 			return nil, &ce.CustomError{Code: 808, Title: "Error scanning table row", Message: err.Error()}
 		}

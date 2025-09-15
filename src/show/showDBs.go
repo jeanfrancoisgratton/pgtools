@@ -46,9 +46,9 @@ func ShowDatabases(cfg *types.DBConfig, sortBySize bool) ([]string, *ce.CustomEr
 	}
 	defer rows.Close()
 
-	var data []types.DbRow
+	var data []DbRow
 	for rows.Next() {
-		var r types.DbRow
+		var r DbRow
 		if err := rows.Scan(&r.Name, &r.SizeBytes); err != nil {
 			return nil, &ce.CustomError{Title: "Scan failed", Message: err.Error(), Code: 202}
 		}

@@ -1,13 +1,15 @@
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/09/12 19:18
-// Original filename: src/types/showTypes.go
+// Original filename: src/types/types_show.go
 
-package types
+package show
+
+import "time"
 
 var SortBySize bool
 var DefaultDB = "postgres"
-var PageOutput = false
+var PagedOutput = false
 
 type DbRow struct {
 	Name      string
@@ -34,4 +36,14 @@ type TableRow struct {
 	IndexB  int64
 	ToastB  int64
 	HasPK   bool
+}
+
+// DbStatsRow holds the handful of counters we display.
+
+type DbStatsRow struct {
+	DB        string
+	Txns      int64 // xact_commit + xact_rollback
+	Commits   int64 // xact_commit
+	Deadlocks int64 // deadlocks
+	StatsAge  time.Duration
 }
