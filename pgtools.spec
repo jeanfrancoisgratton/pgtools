@@ -61,6 +61,30 @@ install -Dpm 0755 %{_sourcedir}/%{_binaryname} %{buildroot}%{_bindir}/%{_binaryn
 
 
 %changelog
+* Mon Sep 15 2025 Binary package builder <builder@famillegratton.net> 1.70.00-0
+- Completed doc, version bump (jean-francois@famillegratton.net)
+- Completed conf subcommand, with better output (jean-
+  francois@famillegratton.net)
+- Completed the conf subcommand (jean-francois@famillegratton.net)
+- renamed files in the show subpackage, added forgotten show stats from last
+  commit (jean-francois@famillegratton.net)
+- brought back most variables from global to package scope (jean-
+  francois@famillegratton.net)
+- Completed most show commands (jean-francois@famillegratton.net)
+- Tool version bump (jean-francois@famillegratton.net)
+- Fixed show schemas (jean-francois@famillegratton.net)
+- Fixed null-string issue in show sessions (jean-francois@famillegratton.net)
+- removed shadowed error variable (jean-francois@famillegratton.net)
+- Normalized error types across the show subpackage (jean-
+  francois@famillegratton.net)
+- moved and exported dbRows (jean-francois@famillegratton.net)
+- ide fixes (jean-francois@famillegratton.net)
+- yet another gitignore fix (jean-francois@famillegratton.net)
+- completed round 2 (jean-francois@famillegratton.net)
+- completed show dbs (jean-francois@famillegratton.net)
+- Added a new check script (jean-francois@famillegratton.net)
+- completed and tested db ls -s (jean-francois@famillegratton.net)
+
 * Fri Sep 12 2025 Binary package builder <builder@famillegratton.net> 1.50.00-0
 - Completed the db create/drop subcomments (jean-francois@famillegratton.net)
 
