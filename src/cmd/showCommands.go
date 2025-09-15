@@ -20,7 +20,7 @@ var showCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show sub-command",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Valid subcommands are: { dbs | sessions | schemas | stats }")
+		fmt.Println("Valid subcommands are: { dbs | schemas | sessions | stats | tables }")
 	},
 }
 

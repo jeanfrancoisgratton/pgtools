@@ -38,7 +38,7 @@ func Execute() {
 func init() {
 	rootCmd.DisableAutoGenTag = true
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
-	rootCmd.AddCommand(clCmd, envCmd, dbCmd, rolesCmd, srvCmd, showCmd)
+	rootCmd.AddCommand(clCmd, envCmd, dbCmd, rolesCmd, srvCmd, showCmd, confCmd)
 
 	rootCmd.PersistentFlags().StringVarP(&types.LogLevel, "loglevel", "l", "none", "Log level: none|debug|info|error")
 	rootCmd.PersistentFlags().BoolVarP(&types.DebugMode, "debug", "d", false, "Enable debug mode")
