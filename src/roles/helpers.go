@@ -1,7 +1,7 @@
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/09/11 13:38
-// Original filename: src/roles/helpers.go
+// Original filename: src/roles/tableHelpers.go
 
 package roles
 

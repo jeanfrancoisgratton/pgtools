@@ -42,23 +42,38 @@ var showDBsCmd = &cobra.Command{
 }
 
 var showSchemasCmd = &cobra.Command{
-	Use:   "schemas",
-	Short: "List all schemas",
+	Use:   "schemas [DB ...]",
+	Short: "List schemas across one or more databases as a single table",
+	Long:  "List all non-system schemas for the specified database(s) in a single aggregated table. If no DBs are specified, defaults to 'postgres'.",
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, cancel := shared.CancellableContext()
 		defer cancel()
 
-		pool, err := shared.GetPool(ctx)
-		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+		dbs := args
+		if len(dbs) == 0 {
+			dbs = []string{"postgres"}
 		}
-		defer pool.Close()
 
-		if sserr := show.ShowSchemas(ctx, pool); sserr != nil {
-			fmt.Println(sserr.Error())
-			os.Exit(1)
+		var all []types.SchemaRow
+
+		for _, dbname := range dbs {
+			pool, perr := shared.GetPoolForDB(ctx, dbname)
+			if perr != nil {
+				fmt.Println(perr.Error())
+				os.Exit(1)
+			}
+
+			rows, cerr := show.CollectSchemas(ctx, pool, dbname)
+			pool.Close()
+			if cerr != nil {
+				fmt.Println(cerr.Error())
+				os.Exit(1)
+			}
+
+			all = append(all, rows...)
 		}
+
+		show.RenderSchemas(all)
 	},
 }
 

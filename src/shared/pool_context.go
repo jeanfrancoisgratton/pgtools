@@ -68,3 +68,33 @@ func GetPool(ctx context.Context) (*pgxpool.Pool, *ce.CustomError) {
 	}
 	return pool, nil
 }
+
+// GetPoolForDB opens a new pgx pool for a specific database name using the current env config.
+func GetPoolForDB(ctx context.Context, dbName string) (*pgxpool.Pool, *ce.CustomError) {
+	cfg, err := environment.LoadConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	dsn := BuildDSN(cfg, dbName)
+
+	pc, pErr := pgxpool.ParseConfig(dsn)
+	if pErr != nil {
+		return nil, &ce.CustomError{Code: 801, Title: "Error parsing DSN", Message: pErr.Error()}
+	}
+
+	// Ensure application_name is set
+	if _, exists := pc.ConnConfig.RuntimeParams["application_name"]; !exists {
+		appName := os.Getenv("PGAPPNAME")
+		if appName == "" {
+			appName = "pgtools"
+		}
+		pc.ConnConfig.RuntimeParams["application_name"] = appName
+	}
+
+	pool, perr := pgxpool.NewWithConfig(ctx, pc)
+	if perr != nil {
+		return nil, &ce.CustomError{Code: 804, Title: "Error connecting to pool", Message: perr.Error()}
+	}
+	return pool, nil
+}

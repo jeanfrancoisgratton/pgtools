@@ -13,6 +13,15 @@ type DbRow struct {
 	SizeBytes int64
 }
 
+type SchemaRow struct {
+	DB        string
+	Schema    string
+	Owner     string
+	Tables    int64
+	Views     int64
+	TotalSize string // already pretty-printed (e.g., "17 MB")
+}
+
 // CLI-bound variables (with reasonable defaults).
 var ExcludedDBs = []string{"template0", "template1"}
 var ExcludedTables = []string{}
