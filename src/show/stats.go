@@ -1,7 +1,7 @@
+// show/showStats.go
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
-// Original timestamp: 2025/09/15 05:13
-// Original filename: src/show/showStats.go
+// Created: 2025/09/15
 // Purpose: "pgtools show stats" — summarize pg_stat_database counters.
 
 package show
@@ -27,7 +27,7 @@ SELECT
   xact_commit,
   xact_rollback,
   deadlocks,
-  stats_since
+  stats_reset
 FROM pg_stat_database
 WHERE datname NOT IN ('template0','template1')
 ORDER BY datname;
@@ -47,14 +47,14 @@ ORDER BY datname;
 			xCommit    int64
 			xRollback  int64
 			deadlocks  int64
-			statsSince *time.Time
+			statsReset *time.Time
 		)
-		if scanErr := rows.Scan(&db, &xCommit, &xRollback, &deadlocks, &statsSince); scanErr != nil {
+		if scanErr := rows.Scan(&db, &xCommit, &xRollback, &deadlocks, &statsReset); scanErr != nil {
 			return &ce.CustomError{Code: 852, Title: "Row scan error", Message: scanErr.Error()}
 		}
 		var age time.Duration
-		if statsSince != nil && !statsSince.IsZero() {
-			age = now.Sub(*statsSince)
+		if statsReset != nil && !statsReset.IsZero() {
+			age = now.Sub(*statsReset)
 			if age < 0 {
 				age = 0
 			}

@@ -12,7 +12,6 @@ import (
 	"pgtools/environment"
 	"pgtools/shared"
 	"pgtools/show"
-	"pgtools/types"
 
 	"github.com/spf13/cobra"
 )
@@ -35,7 +34,7 @@ var showDBsCmd = &cobra.Command{
 			fmt.Printf("%s\n", err.Error())
 		}
 
-		if _, nerr := show.ShowDatabases(cfg, types.SortBySize); nerr != nil {
+		if _, nerr := show.ShowDatabases(cfg, show.SortBySize); nerr != nil {
 			fmt.Printf("%s\n", nerr.Error())
 			os.Exit(nerr.Code)
 		}
@@ -55,7 +54,7 @@ var showSchemasCmd = &cobra.Command{
 			dbs = []string{"postgres"}
 		}
 
-		var all []types.SchemaRow
+		var all []show.SchemaRow
 
 		for _, dbname := range dbs {
 			pool, perr := shared.GetPoolForDB(ctx, dbname)
@@ -95,8 +94,8 @@ var showTablesCmd = &cobra.Command{
 			dbs = args
 		} else {
 			// Use the global default DB (user-provided in src/types)
-			if types.DefaultDB != "" {
-				dbs = []string{types.DefaultDB}
+			if show.DefaultDB != "" {
+				dbs = []string{show.DefaultDB}
 			} else {
 				// Safe fallback if DefaultDB isn't set yet
 				dbs = []string{"postgres"}
@@ -133,8 +132,30 @@ var showSessionsCmd = &cobra.Command{
 	},
 }
 
+var showStatsCmd = &cobra.Command{
+	Use:   "stats",
+	Short: "Summarize pg_stat_database counters",
+	Long:  "Summarize transaction counters (txns, commits), deadlocks, and the age of statistics per database from pg_stat_database.",
+	Run: func(cmd *cobra.Command, args []string) {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		pool, err := shared.GetPool(ctx)
+		if err != nil {
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+		defer pool.Close()
+
+		if sErr := show.ShowStats(ctx, pool); sErr != nil {
+			fmt.Println(sErr.Error())
+			os.Exit(1)
+		}
+	},
+}
+
 func init() {
-	showCmd.AddCommand(showDBsCmd, showSchemasCmd, showTablesCmd, showSessionsCmd)
-	showCmd.PersistentFlags().BoolVarP(&types.PageOutput, "pager", "p", false, "Paginate output")
-	showDBsCmd.Flags().BoolVarP(&types.SortBySize, "sort-size", "s", false, "Sort databases by size (largest first)")
+	showCmd.AddCommand(showDBsCmd, showSchemasCmd, showTablesCmd, showSessionsCmd, showStatsCmd)
+	showCmd.PersistentFlags().BoolVarP(&show.PagedOutput, "pager", "p", false, "Paginate output")
+	showDBsCmd.Flags().BoolVarP(&show.SortBySize, "sort-size", "s", false, "Sort databases by size (largest first)")
 }
