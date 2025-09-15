@@ -6,7 +6,8 @@
 package types
 
 var SortBySize bool
-var DB2Show = ""
+var DefaultDB = "postgres"
+var PageOutput = false
 
 type DbRow struct {
 	Name      string
@@ -22,6 +23,15 @@ type SchemaRow struct {
 	TotalSize string // already pretty-printed (e.g., "17 MB")
 }
 
-// CLI-bound variables (with reasonable defaults).
-var ExcludedDBs = []string{"template0", "template1"}
-var ExcludedTables = []string{}
+type TableRow struct {
+	DB      string
+	Schema  string
+	Table   string
+	Owner   string
+	RowsEst int64
+	TotalB  int64
+	TableB  int64
+	IndexB  int64
+	ToastB  int64
+	HasPK   bool
+}

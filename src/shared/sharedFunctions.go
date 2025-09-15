@@ -29,27 +29,9 @@ func QuoteIdents(in []string) []string {
 	return out
 }
 
-// HumanizeBytes renders a byte count using 1024-based units with a compact format.
-// Examples: 0B, 999B, 1.0KiB, 12.3MiB, 1.0GiB
-func HumanizeBytes(b int64) string {
-	const unit = 1024
-	if b < unit {
-		return fmt.Sprintf("%dB", b)
-	}
-	div, exp := int64(unit), 0
-	for n := b / unit; n >= unit && exp < 5; n /= unit {
-		div *= unit
-		exp++
-	}
-	// Units: KiB, MiB, GiB, TiB, PiB
-	pre := []string{"KB", "MB", "GB", "TB", "PB"}[exp]
-	value := float64(b) / float64(div)
-	return fmt.Sprintf("%.3f %s", value, pre)
-}
-
-// HumanizeBytesMBGB formats a byte count into MB or GB with 1 decimal place.
+// HumanizeBytes formats a byte count into MB or GB with 1 decimal place.
 // It deliberately avoids KB/TB to keep the output compact and aligned.
-func HumanizeBytesMBGB(b int64) string {
+func HumanizeBytes(b int64) string {
 	const (
 		MB = 1 << 20
 		GB = 1 << 30

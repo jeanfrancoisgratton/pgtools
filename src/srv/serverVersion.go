@@ -1,7 +1,7 @@
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/09/11 22:36
-// Original filename: src/srv/misc.go
+// Original filename: src/srv/serverVersion.go
 
 package srv
 

@@ -1,7 +1,7 @@
 // pgtools
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
 // Original timestamp: 2025/09/11 22:28
-// Original filename: src/srv/discovery.go
+// Original filename: src/srv/srvHelpers.go
 
 package srv
 

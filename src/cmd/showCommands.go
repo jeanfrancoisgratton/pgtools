@@ -6,6 +6,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"pgtools/environment"
@@ -78,21 +79,33 @@ var showSchemasCmd = &cobra.Command{
 }
 
 var showTablesCmd = &cobra.Command{
-	Use:   "tables",
-	Short: "Show all tables with sizes and row estimates",
+	Use:   "tables [DB1 [DB2 ...]]",
+	Short: "List tables (schema, owner, sizes, PK) from one or more databases",
+	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx, cancel := shared.CancellableContext()
-		defer cancel()
-
-		pool, err := shared.GetPool(ctx)
+		cfg, err := environment.LoadConfig()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(err.Error())
 			os.Exit(1)
 		}
-		defer pool.Close()
 
-		if err := show.ShowTables(ctx, pool); err != nil {
-			fmt.Println(err)
+		// Decide which DBs to show:
+		var dbs []string
+		if len(args) > 0 {
+			dbs = args
+		} else {
+			// Use the global default DB (user-provided in src/types)
+			if types.DefaultDB != "" {
+				dbs = []string{types.DefaultDB}
+			} else {
+				// Safe fallback if DefaultDB isn't set yet
+				dbs = []string{"postgres"}
+			}
+		}
+
+		ctx := context.Background()
+		if terr := show.ShowTables(ctx, cfg, dbs); terr != nil {
+			fmt.Println(terr.Error())
 			os.Exit(1)
 		}
 	},
@@ -122,5 +135,6 @@ var showSessionsCmd = &cobra.Command{
 
 func init() {
 	showCmd.AddCommand(showDBsCmd, showSchemasCmd, showTablesCmd, showSessionsCmd)
+	showCmd.PersistentFlags().BoolVarP(&types.PageOutput, "pager", "p", false, "Paginate output")
 	showDBsCmd.Flags().BoolVarP(&types.SortBySize, "sort-size", "s", false, "Sort databases by size (largest first)")
 }
