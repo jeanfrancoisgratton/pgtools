@@ -19,8 +19,12 @@ func Render(rows []Row) {
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"Name", "Setting", "Unit", "Source", "Category", "Description"})
 	for _, r := range rows {
-		cat := ellipsize(r.Category, 30)
-		desc := ellipsize(r.ShortDesc, 40)
+		cat := r.Category
+		desc := r.ShortDesc
+		if !FullOutput {
+			cat = ellipsize(cat, 30)
+			desc = ellipsize(desc, 40)
+		}
 		t.AppendRow(table.Row{r.Name, r.Setting, r.Unit, r.Source, cat, desc})
 	}
 	t.SortBy([]table.SortBy{{Name: "Name", Mode: table.Asc}})

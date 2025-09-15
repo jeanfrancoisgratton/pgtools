@@ -124,5 +124,7 @@ var confSetCmd = &cobra.Command{
 
 func init() {
 	confCmd.AddCommand(confListCmd, confGetCmd, confSetCmd)
-	rootCmd.AddCommand(confCmd)
+
+	confListCmd.Flags().BoolVarP(&conf.FullOutput, "full", "f", false, "Show full text for Category and Description")
+	confGetCmd.Flags().BoolVarP(&conf.FullOutput, "full", "f", false, "Show full text for Category and Description")
 }

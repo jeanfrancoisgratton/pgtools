@@ -19,3 +19,4 @@ type Row struct {
 
 // very conservative name validator: letters, digits, _ and .
 var ValidName = regexp.MustCompile(`^[a-zA-Z0-9_.]+$`)
+var FullOutput = false
