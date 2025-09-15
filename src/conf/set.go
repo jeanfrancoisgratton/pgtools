@@ -7,20 +7,16 @@ package conf
 
 import (
 	"context"
-	"regexp"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	ce "github.com/jeanfrancoisgratton/customError/v2"
 )
 
-// very conservative name validator: letters, digits, _ and .
-var validName = regexp.MustCompile(`^[a-zA-Z0-9_.]+$`)
-
 // Set sets a server-wide parameter using ALTER SYSTEM and reloads the config.
 // Requires superuser or appropriate privileges. The change is persisted to
 // postgresql.auto.conf.
 func Set(ctx context.Context, pool *pgxpool.Pool, name, value string) *ce.CustomError {
-	if !validName.MatchString(name) {
+	if !ValidName.MatchString(name) {
 		return &ce.CustomError{Code: 911, Title: "Invalid setting name", Message: "Only letters/digits/underscore/dot are allowed"}
 	}
 

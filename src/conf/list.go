@@ -7,24 +7,11 @@ package conf
 
 import (
 	"context"
-	"os"
 	"strings"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	ce "github.com/jeanfrancoisgratton/customError/v2"
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/jedib0t/go-pretty/v6/text"
 )
-
-// Row holds one pg_settings entry we display.
-type Row struct {
-	Name      string
-	Setting   string
-	Unit      string
-	Source    string
-	Category  string
-	ShortDesc string
-}
 
 // CollectAll queries pg_settings and returns all rows.
 func CollectAll(ctx context.Context, pool *pgxpool.Pool) ([]Row, *ce.CustomError) {
@@ -102,20 +89,4 @@ func ellipsize(s string, max int) string {
 		return strings.Repeat(".", max)
 	}
 	return string(rs[:max-3]) + "..."
-}
-
-// Render prints a compact table, similar styling to ListEnvironments().
-// Also truncates the Description column to 40 characters with "...".
-func Render(rows []Row) {
-	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"Name", "Setting", "Unit", "Source", "Category", "Description"})
-	for _, r := range rows {
-		desc := ellipsize(r.ShortDesc, 40)
-		t.AppendRow(table.Row{r.Name, r.Setting, r.Unit, r.Source, r.Category, desc})
-	}
-	t.SortBy([]table.SortBy{{Name: "Name", Mode: table.Asc}})
-	t.SetStyle(table.StyleBold)
-	t.Style().Format.Header = text.FormatDefault
-	t.Render()
 }
