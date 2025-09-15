@@ -1,0 +1,7 @@
+- [ ] More consistent verbosity 
+- [ ] Move logging from current subpackage to github.com/jeanfrancoisgratton/helperFunctions/v2
+- [ ] Consistent error codes (BTW, ERRORCODES.md is getting irrelevant by the minute)
+- [ ] Need to add a -f (--force) flag to `DROP {TABLE|DATABASE}`  <<-- do we ?
+- [x] Create an empty log file when launching the tool for the first time in order to avoid a ENOFILE error
+- [x] Markers in log at start and end of execution  <-- this will disappear once we use helperFunctions
+- [ ] Vacuum, Analyze and Reindex functions ? not sure... I do not want this tool to be a DBA tool, really.....
