@@ -1,5 +1,5 @@
 Package: pgtools
-Version: 1.50.00-0
+Version: 1.60.00-0
 Architecture: amd64
 Maintainer: J.F. Gratton<jean-francois@famillegratton.net>
 Description: PGSQL multi-usage tool

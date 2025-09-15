@@ -15,7 +15,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:     "pgtools",
 	Short:   "PostgreSQL client utilities",
-	Version: "1.50.00 (2025.09.12)",
+	Version: "1.60.00 (2025.09.15)",
 }
 
 // Shows changelog
@@ -56,6 +56,7 @@ func changeLog() {
 	fmt.Print(`
 VERSION			DATE			COMMENT
 -------			----			-------
+1.60.00			2025.09.15		Completed the show subcommand
 1.50.00			2025.09.12		Completed the db create and db drop subcommands
 1.40.00			2025.09.11		Completed the srv subcommand
 1.30.00			2025.09.11		Completed the roles subcommand

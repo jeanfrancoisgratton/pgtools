@@ -26,7 +26,7 @@ var showCmd = &cobra.Command{
 
 var showDBsCmd = &cobra.Command{
 	Use:     "dbs",
-	Aliases: []string{"databases"},
+	Aliases: []string{"databases", "db"},
 	Short:   "List all accessible databases",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := environment.LoadConfig()
@@ -79,7 +79,7 @@ var showSchemasCmd = &cobra.Command{
 
 var showTablesCmd = &cobra.Command{
 	Use:   "tables",
-	Short: "List all tables with sizes and row estimates",
+	Short: "Show all tables with sizes and row estimates",
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, cancel := shared.CancellableContext()
 		defer cancel()
@@ -99,8 +99,9 @@ var showTablesCmd = &cobra.Command{
 }
 
 var showSessionsCmd = &cobra.Command{
-	Use:   "sessions",
-	Short: "List active sessions (pg_stat_activity)",
+	Use:     "sessions",
+	Aliases: []string{"activity"},
+	Short:   "Show active sessions (pg_stat_activity)",
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, cancel := shared.CancellableContext()
 		defer cancel()
