@@ -18,7 +18,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	ce "github.com/jeanfrancoisgratton/customError/v2"
-	hf "github.com/jeanfrancoisgratton/helperFunctions"
+	hf "github.com/jeanfrancoisgratton/helperFunctions/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 )

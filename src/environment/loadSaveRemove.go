@@ -14,7 +14,7 @@ import (
 	"strings"
 
 	ce "github.com/jeanfrancoisgratton/customError/v2"
-	hf "github.com/jeanfrancoisgratton/helperFunctions"
+	hf "github.com/jeanfrancoisgratton/helperFunctions/v2"
 )
 
 // Loads the configuration file if -e is not passed, it defaults to $HOME/.config/JFG/pgtools/defaultEnv.json
@@ -52,15 +52,14 @@ func CreateConfig() *ce.CustomError {
 	dbc.Password = hf.EncodeString(hf.GetPassword("Please enter the user's password: ", types.DebugMode), "")
 	sslmode := hf.GetBoolValFromPrompt("PGSQL SSL mode (t/f): ")
 	if sslmode {
-		dbc.SSLMode = "require"
-		dbc.SSLCert = hf.GetStringValFromPrompt("[optional] Path to the PGSQL SSL certificate: ")
-		dbc.SSLKey = hf.GetStringValFromPrompt("[optional] Path to the PGSQL SSL key: ")
+		dbc.SSLMode = "prefer"
 	} else {
 		dbc.SSLMode = "disable"
 	}
-	if sslmode && (dbc.SSLCert == "" || dbc.SSLKey == "") {
-		return &ce.CustomError{Code: 12, Title: "SSL certificate and key are required"}
-	}
+	dbc.SSLRootCert = hf.GetStringValFromPrompt("[optional] Path to the CA certificate: ")
+	dbc.SSLclientCert = hf.GetStringValFromPrompt("[optional] Path to the client SSL certificate: ")
+	dbc.SSLclientKey = hf.GetStringValFromPrompt("[optional] Path to the client SSL key: ")
+	dbc.DefaultDB = hf.GetStringValFromPrompt("[optional] Default database to fall back on: ")
 
 	jStream, err := json.MarshalIndent(dbc, "", "  ")
 	if err != nil {

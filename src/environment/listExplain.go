@@ -14,7 +14,7 @@ import (
 	"strings"
 
 	ce "github.com/jeanfrancoisgratton/customError/v2"
-	hf "github.com/jeanfrancoisgratton/helperFunctions"
+	hf "github.com/jeanfrancoisgratton/helperFunctions/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
@@ -68,8 +68,8 @@ func ExplainEnvFile(envfiles []string) *ce.CustomError {
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"Environment file", "DB server host", "DB server port", "DB user", "DB password",
-		"SSL enabled", "SSL cert", "SSL key", "Description"})
+	t.AppendHeader(table.Row{"Environment file", "DB host", "DB server port", "DB user", "DB password",
+		"SSL ?", "CA cert", "SSL cert", "SSL key", "Default database", "Description"})
 
 	for _, envfile := range envfiles {
 		if !strings.HasSuffix(envfile, ".json") {
@@ -77,23 +77,38 @@ func ExplainEnvFile(envfiles []string) *ce.CustomError {
 		}
 		types.EnvConfigFile = envfile
 
-		// error code 99 is specifically taylored for this use; it means that defaultEnv does not exist, and that
+		// error code 99 is specifically tailored for this use; it means that defaultEnv does not exist, and that
 		// we can continue. otherwise we abort
 		if e, err := LoadConfig(); err != nil && err.Code != 99 {
 			types.EnvConfigFile = oldEnvFile
 			return err
 		} else {
-			sslcert := filepath.Base(e.SSLCert)
-			sslkey := filepath.Base(e.SSLKey)
-			if sslcert == "." {
-				sslcert = "n/a"
+			sslclientcert := filepath.Base(e.SSLclientCert)
+			sslclientkey := filepath.Base(e.SSLclientKey)
+			sslcacert := filepath.Base(e.SSLRootCert)
+			if sslcacert == "." {
+				sslcacert = "n/a"
 			}
-			if sslkey == "." {
-				sslkey = "n/a"
+			if sslclientcert == "." {
+				sslclientcert = "n/a"
 			}
+			if sslclientkey == "." {
+				sslclientkey = "n/a"
+			}
+			sslmode := hf.DisabledGlyph()
+			switch e.SSLMode {
+			case "prefer", "verify-ca", "verify-full":
+				sslmode = hf.EnabledGlyph()
+			case "allow", "require":
+				sslmode = hf.WarningGlyph()
+			default:
+				sslmode = hf.DisabledGlyph()
+			}
+
 			t.AppendRow([]interface{}{hf.Green(envfile), hf.Green(e.Host), hf.Green(strconv.Itoa(e.Port)),
 				hf.Green(e.User), hf.Yellow("*ENCODED*"),
-				hf.Green(e.SSLMode), hf.Green(sslcert), hf.Green(sslkey), hf.Green(e.Description)})
+				sslmode, hf.Green(sslcacert), hf.Green(sslclientcert),
+				hf.Green(sslclientkey), hf.Green(e.DefaultDB), hf.Green(e.Description)})
 		}
 	}
 	t.SortBy([]table.SortBy{

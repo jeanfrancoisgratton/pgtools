@@ -15,7 +15,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:     "pgtools",
 	Short:   "PostgreSQL client utilities",
-	Version: "1.70.00 (2025.09.15)",
+	Version: "1.72.00 (2025.09.16)",
 }
 
 // Shows changelog
@@ -40,6 +40,7 @@ func init() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = false
 	rootCmd.AddCommand(completionCmd, clCmd, envCmd, dbCmd, rolesCmd, srvCmd, showCmd, confCmd)
 
+	rootCmd.PersistentFlags().StringVarP(&types.AppNameKV, "appname", "A", "pgtools", "Application name as the server should it")
 	rootCmd.PersistentFlags().StringVarP(&types.LogLevel, "loglevel", "l", "none", "Log level: none|debug|info|error")
 	rootCmd.PersistentFlags().BoolVarP(&types.DebugMode, "debug", "d", false, "Enable debug mode")
 	rootCmd.PersistentFlags().StringVarP(&types.EnvConfigFile, "env", "e", "defaultEnv.json", "Default environment configuration file; this is a per-user setting.")
@@ -56,6 +57,8 @@ func changeLog() {
 	fmt.Print(`
 VERSION			DATE			COMMENT
 -------			----			-------
+1.72.00			2025.09.16		Updated helperFunctions dependency to 2.4.1
+1.71.00			2025.09.16		Fixed ssl handling in BuildDSN()
 1.70.00			2025.09.15		Completed the conf subcommand
 1.60.00			2025.09.15		Completed the show subcommand
 1.50.00			2025.09.12		Completed the db create and db drop subcommands

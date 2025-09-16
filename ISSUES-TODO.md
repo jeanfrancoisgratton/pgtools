@@ -4,4 +4,4 @@
 - [ ] Need to add a -f (--force) flag to `DROP {TABLE|DATABASE}`  <<-- do we ?
 - [x] Create an empty log file when launching the tool for the first time in order to avoid a ENOFILE error
 - [x] Markers in log at start and end of execution  <-- this will disappear once we use helperFunctions
-- [ ] Vacuum, Analyze and Reindex functions ? not sure... I do not want this tool to be a DBA tool, really.....
+- [ ] ~~VACUUM, ANALYZE and REINDEX functions ? not sure... I do not want this tool to be a DBA tool, really.....~~

@@ -12,7 +12,7 @@ import (
 	"pgtools/srv"
 	"pgtools/types"
 
-	hf "github.com/jeanfrancoisgratton/helperFunctions"
+	hf "github.com/jeanfrancoisgratton/helperFunctions/v2"
 	"github.com/spf13/cobra"
 )
 

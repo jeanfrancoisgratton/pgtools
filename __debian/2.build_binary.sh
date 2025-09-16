@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PKGDIR="pgtools-1.70.00-0_amd64"
+PKGDIR="pgtools-1.72.00-0_amd64"
 
 mkdir -p ${PKGDIR}/opt/bin ${PKGDIR}/DEBIAN
 mkdir -p ${PKGDIR}/opt/bin ${PKGDIR}/DEBIAN
