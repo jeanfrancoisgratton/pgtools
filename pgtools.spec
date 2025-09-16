@@ -61,6 +61,11 @@ install -Dpm 0755 %{_sourcedir}/%{_binaryname} %{buildroot}%{_bindir}/%{_binaryn
 
 
 %changelog
+* Tue Sep 16 2025 Binary package builder <builder@famillegratton.net> 1.72.00-0
+- SSL handling changes, updated to helperFunctions/v2 (jean-
+  francois@famillegratton.net)
+- doc update (jean-francois@famillegratton.net)
+
 * Mon Sep 15 2025 Binary package builder <builder@famillegratton.net> 1.70.00-0
 - Completed doc, version bump (jean-francois@famillegratton.net)
 - Completed conf subcommand, with better output (jean-
